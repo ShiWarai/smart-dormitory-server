@@ -1,9 +1,10 @@
 create table role_type
 (
-    id    int                      not null
+    id   int         not null
         primary key,
-    name  char(16) default 'guest' not null,
-    level int      default 0       not null,
+    name varchar(16) not null,
+    constraint role_type_id_uindex
+        unique (id),
     constraint role_type_name_uindex
         unique (name)
 )
