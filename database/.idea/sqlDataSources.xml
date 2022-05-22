@@ -7,6 +7,12 @@
         <node kind="schema" qname="smart_dormitory" />
       </scope>
     </mapping>
+    <mapping uuid="2f354504-3545-473e-863d-ff6cbbec96ff" name="smart_dormitory@localhost Mapping">
+      <data-sources db="209dd67b-3714-4fb3-8c14-eea77d76bb3e" ddl="f2a5da52-205f-4b02-8614-ef6b90204e69" />
+      <scope>
+        <node kind="database" qname="smart_dormitory" />
+      </scope>
+    </mapping>
   </component>
   <component name="SqlDataSourceStorage">
     <option name="dataSources">

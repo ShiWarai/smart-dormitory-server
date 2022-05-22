@@ -1,4 +1,4 @@
-create table subject
+create table object
 (
     id          int auto_increment
         primary key,
@@ -8,7 +8,7 @@ create table subject
     constraint subject_id_uindex
         unique (id),
     constraint subject_subject_type_id_fk
-        foreign key (type_id) references subject_type (id)
+        foreign key (type_id) references object_type (id)
             on update cascade on delete cascade
 );
 

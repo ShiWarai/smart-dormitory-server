@@ -2,7 +2,7 @@ create table reservation
 (
     id                int auto_increment
         primary key,
-    subject_id        int      not null,
+    object_id         int      not null,
     resident_id       int      not null,
     reason            tinytext null,
     start_reservation datetime not null,
@@ -13,7 +13,7 @@ create table reservation
         foreign key (resident_id) references resident (id)
             on update cascade on delete cascade,
     constraint reservation_subject_id_fk
-        foreign key (subject_id) references subject (id)
+        foreign key (object_id) references object (id)
             on update cascade on delete cascade
 );
 

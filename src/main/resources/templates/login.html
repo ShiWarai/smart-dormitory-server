@@ -1,0 +1,26 @@
+<html lang="en" class="no-touch">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Sign in</title>
+</head>
+<body>
+<div>
+    <form method="post" action="/login">
+        <h2>Пройдите авторизацию</h2>
+        <p>
+            <label for="username" >Логин</label>
+            <input type="text" id="username" name="username" placeholder="Username" required="" autofocus="">
+        </p>
+        <p>
+            <label for="password" >Пароль</label>
+            <input type="password" id="password" name="password"  placeholder="Password" required="">
+        </p>
+        <button type="submit">Авторизоваться</button>
+    </form>
+    <button onclick="window.location.href='registration';">Регистрация</button>
+</div>
+</body>
+</html>

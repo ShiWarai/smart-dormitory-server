@@ -7,6 +7,7 @@ create table resident
     patronymic varchar(50)   null,
     birthdate  date          not null,
     student_id char(7)       null,
+    pin_code   char(4)       null,
     room_id    int           null,
     role_id    int default 0 not null,
     constraint resident_resident_id_uindex

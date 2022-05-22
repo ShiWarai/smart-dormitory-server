@@ -1,4 +1,4 @@
-create table subject_type
+create table object_type
 (
     id   int auto_increment
         primary key,

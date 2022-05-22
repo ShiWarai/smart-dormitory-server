@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta charset="UTF-8">
+    <title>Sign up</title>
+</head>
+<body>
+<div>
+    <h2>Пройдите регистрацию</h2>
+    <form th:method="POST" th:action="@{/registration}" th:object="${user}">
+        <p>
+            <label for="username">Логин</label>
+            <input type="text" th:field="*{username}" id="username" placeholder="Username"/>
+        </p>
+
+        <p>
+            <label for="password">Пароль</label>
+            <input type="password" th:field="*{password}" id="password" placeholder="Password"/>
+        </p>
+
+        <button type="submit">Подтвердить</button>
+    </form>
+</div>
+</body>
+</html>
