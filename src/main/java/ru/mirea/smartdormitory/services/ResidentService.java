@@ -28,11 +28,8 @@ public class ResidentService extends AbstractService<Resident, IResidentReposito
         this.residentRepository = repository;
     }
 
-    public String getResidentRole(Authentication authentication) {
-        if (authentication == null)
-            return RoleType.GUEST.name();
-        else
-            return ((Resident) loadUserByUsername(authentication.getName())).getRole();
+    public RoleType getResidentRoleByStudentId(String student_id) {
+        return RoleType.valueOf(findResidentByStudentId(student_id).getRole());
     }
 
     public Long getResidentId(Authentication authentication) {
@@ -40,13 +37,6 @@ public class ResidentService extends AbstractService<Resident, IResidentReposito
             return -1l;
         else
             return ((Resident) loadUserByUsername(authentication.getName())).getId();
-    }
-
-    @Override
-    public Resident update(Long id, Resident entity) {
-        findById(id);
-        entity.setId(id);
-        return create(entity);
     }
 
     public Resident findResidentByStudentId(String username){

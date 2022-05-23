@@ -22,3 +22,5 @@ alter table resident
 create unique index resident_id_uindex
     on resident (id);
 
+create unique index resident_student_id_uindex
+    on resident (student_id);

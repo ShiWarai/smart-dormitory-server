@@ -1,6 +1,7 @@
 package ru.mirea.smartdormitory.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +18,13 @@ import java.util.Collections;
 @Setter
 @Getter
 @NoArgsConstructor
+@JsonIgnoreProperties({"enabled",
+                        "password",
+                        "username",
+                        "authorities",
+                        "accountNonExpired",
+                        "accountNonLocked",
+                        "credentialsNonExpired"})
 public class Resident implements UserDetails {
 
     @Id

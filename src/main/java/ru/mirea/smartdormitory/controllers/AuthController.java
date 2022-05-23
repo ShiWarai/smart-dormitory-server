@@ -39,7 +39,7 @@ public class AuthController extends AbstractController<Resident, IResidentReposi
             }
         }
         model.addAttribute("errorMessage", errorMessage);
-        model.addAttribute("userRole", residentService.getResidentRole(authentication));
+        model.addAttribute("userRole", residentService.getResidentRoleByStudentId(authentication.getName()));
         return "login";
     }
 

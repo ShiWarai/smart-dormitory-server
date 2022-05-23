@@ -22,7 +22,6 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         this.residentService = residentService;
     }
 
-    
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
