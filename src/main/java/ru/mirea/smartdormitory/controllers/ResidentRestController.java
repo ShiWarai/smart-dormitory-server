@@ -42,7 +42,7 @@ public class ResidentRestController {
     @GetMapping(value="/resident/get/{student_id}")
     public ResponseEntity<Resident> getResidentBy(Authentication authentication, @PathVariable String student_id) {
         RoleType role = service.getResidentRoleByStudentId(authentication.getName());
-        if(role == RoleType.COMMANDANT || authentication.getName() == student_id)
+        if(role == RoleType.COMMANDANT || authentication.getName().equals(student_id))
         {
             Resident resident = service.findResidentByStudentId(student_id);
             return resident != null
@@ -67,14 +67,15 @@ public class ResidentRestController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
-    @PutMapping("/resident/update/{student_id}")
-    public ResponseEntity<Resident> updateResident(Authentication authentication, @PathVariable String student_id, @RequestBody Resident resident) {
+    @PutMapping("/resident/update")
+    public ResponseEntity<Resident> updateResident(Authentication authentication, @RequestBody Resident resident) {
         RoleType role = service.getResidentRoleByStudentId(authentication.getName());
 
-        if(role == RoleType.COMMANDANT || authentication.getName() == resident.getStudentId()) {
-            Resident old_resident = service.findResidentByStudentId(student_id);
+        if(role == RoleType.COMMANDANT || authentication.getName().equals(resident.getStudentId())) {
+            Resident old_resident = service.findResidentByStudentId(resident.getStudentId());
             if(old_resident != null) {
                 resident.setId(old_resident.getId());
+                resident.setStudentId(old_resident.getStudentId());
                 resident.setPinCode(encoder.encode(resident.getPinCode()));
                 return new ResponseEntity<Resident>(service.create(resident), HttpStatus.OK);
             }
@@ -89,8 +90,8 @@ public class ResidentRestController {
     public ResponseEntity<?> deleteResident(Authentication authentication, @PathVariable String student_id) {
         RoleType role = service.getResidentRoleByStudentId(authentication.getName());
 
-        if((role == RoleType.COMMANDANT) || (authentication.getName() != student_id))
-            if(service.delete(service.findResidentByStudentId(student_id).getId()))
+        if((role == RoleType.COMMANDANT) || (authentication.getName().equals(student_id)))
+            if(service.findResidentByStudentId(student_id) != null && service.delete(service.findResidentByStudentId(student_id).getId()))
                 return new ResponseEntity<>(HttpStatus.OK);
             else
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);

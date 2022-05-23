@@ -15,9 +15,9 @@ import javax.persistence.*;
 public class StatusType {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true, nullable = true)
     private String name;
 }

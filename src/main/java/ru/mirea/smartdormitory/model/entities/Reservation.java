@@ -21,18 +21,18 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "object_id")
+    @Column(name = "object_id", nullable = false)
     private Long objectId;
 
-    @Column(name = "resident_ id")
+    @Column(name = "resident_ id", nullable = false)
     private Long residentId;
 
-    @Column(name = "reason")
+    @Column(columnDefinition = "reason TEXT")
     private String reason;
 
-    @Column(name = "start_reservation")
+    @Column(name = "start_reservation", nullable = false)
     private java.sql.Timestamp startReservation;
 
-    @Column(name = "end_reservation")
+    @Column(name = "end_reservation", nullable = false)
     private java.sql.Timestamp endReservation;
 }

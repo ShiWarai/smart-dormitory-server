@@ -21,7 +21,7 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long number;
 
-    @Column(name = "floor")
+    @Column(name = "floor", nullable = false)
     private String floor;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,6 +29,6 @@ public class Room {
     @JsonIgnore
     private RoomType type;
 
-    @Column(name = "type_id")
+    @Column(name = "type_id", nullable = false)
     private Long type_id;
 }

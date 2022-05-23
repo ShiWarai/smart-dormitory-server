@@ -22,10 +22,10 @@ public class Object {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", length = 64, nullable = false)
     private String name;
 
-    @Column(name = "description")
+    @Column(columnDefinition = "description TEXT")
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,9 +33,9 @@ public class Object {
     @JsonIgnore
     private ObjectType type;
 
-    @Column(name = "type_id")
+    @Column(name = "type_id", nullable = false)
     private Long type_id;
 
-    @Column(name = "status_id")
+    @Column(columnDefinition = "status_id INTEGER default 0 not null")
     private Long status_id;
 }

@@ -32,28 +32,28 @@ public class Resident implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "surname")
+    @Column(name = "surname", nullable = false, length = 50)
     private String surname;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, length = 50)
     private String name;
 
-    @Column(name = "patronymic")
+    @Column(name = "patronymic", length = 50)
     private String patronymic;
 
     @Column(name = "birthdate")
     private java.sql.Date birthdate;
 
-    @Column(name = "student_id")
+    @Column(name = "student_id", unique = true, nullable = false)
     private String studentId;
 
-    @Column(name = "pin_code")
+    @Column(name = "pin_code", length = 256)
     private String pinCode;
 
     @Column(name = "room_number")
     private Long roomNumber;
 
-    @Column(name = "role")
+    @Column(name = "role", length = 16, nullable = false)
     private String role;
 
     @Override
