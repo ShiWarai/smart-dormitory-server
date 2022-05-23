@@ -9,7 +9,7 @@ import ru.mirea.smartdormitory.model.repositories.IReservationRepository;
 @Service
 @Transactional
 public class ReservationService extends AbstractService<Reservation, IReservationRepository>{
-    private IReservationRepository reservationRepository;
+    private final IReservationRepository reservationRepository;
 
     @Autowired
     protected ReservationService(IReservationRepository repository) {

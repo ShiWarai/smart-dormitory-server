@@ -1,13 +1,10 @@
 package ru.mirea.smartdormitory.controllers;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.mirea.smartdormitory.model.entities.Resident;
 import ru.mirea.smartdormitory.model.types.RoleType;
@@ -20,7 +17,7 @@ public class ResidentRestController {
 
     private final ResidentService service;
 
-    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @Autowired
     public ResidentRestController(ResidentService service) {

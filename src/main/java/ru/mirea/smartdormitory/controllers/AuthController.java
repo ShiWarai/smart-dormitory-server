@@ -1,24 +1,21 @@
 package ru.mirea.smartdormitory.controllers;
 
-import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
 import ru.mirea.smartdormitory.model.entities.Resident;
 import ru.mirea.smartdormitory.model.repositories.IResidentRepository;
-import ru.mirea.smartdormitory.services.AbstractService;
 import ru.mirea.smartdormitory.services.ResidentService;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Controller
 public class AuthController extends AbstractController<Resident, IResidentRepository>{
-    private ResidentService residentService;
+    private final ResidentService residentService;
 
     protected AuthController(ResidentService service) {
         super(service);

@@ -19,8 +19,8 @@ import java.sql.Date;
 @Transactional
 public class ResidentService extends AbstractService<Resident, IResidentRepository> implements UserDetailsService {
 
-    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-    private IResidentRepository residentRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+    private final IResidentRepository residentRepository;
 
     @Autowired
     protected ResidentService(IResidentRepository repository) {

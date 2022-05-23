@@ -2,14 +2,12 @@ package ru.mirea.smartdormitory.services;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.core.Authentication;
 
-import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
 public  abstract class AbstractService<T, D extends JpaRepository<T, Long>> {
-    private D repository;
+    private final D repository;
 
     protected AbstractService(D repository) {
         this.repository = repository;
