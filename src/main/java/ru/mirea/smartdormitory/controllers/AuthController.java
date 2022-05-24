@@ -10,6 +10,7 @@ import ru.mirea.smartdormitory.model.entities.Resident;
 import ru.mirea.smartdormitory.model.repositories.IResidentRepository;
 import ru.mirea.smartdormitory.services.ResidentService;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -45,8 +46,9 @@ public class AuthController extends AbstractController<Resident, IResidentReposi
         return "redirect:/login";
     }
 
-//    @GetMapping("/sign")
-//    public String getRegistrationPage(@ModelAttribute("resident") Resident resident) {
-//        return "registration";
-//    }
+    public void authWithHttpServletRequest(HttpServletRequest request, String username, String password) {
+        try {
+            request.login(username, password);
+        } catch (ServletException e) { }
+    }
 }
