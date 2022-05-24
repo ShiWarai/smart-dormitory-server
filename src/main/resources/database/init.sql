@@ -130,3 +130,9 @@ create table if not exists reservation
 
 create unique index if not exists reservation_id_uindex
     on reservation (id);
+
+INSERT INTO public.status_type (id, name)
+VALUES (100, 'ready');
+
+INSERT INTO public.status_type (id, name)
+VALUES (200, 'busy');
