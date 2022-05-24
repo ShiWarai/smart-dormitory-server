@@ -1,9 +1,8 @@
 package ru.mirea.smartdormitory.model.types;
 
 public enum RoleType{
-    GUEST,
     STUDENT,
+    STUFF,
     GUARD,
     COMMANDANT,
-    STUFF
 }

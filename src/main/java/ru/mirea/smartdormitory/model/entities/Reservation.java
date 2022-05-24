@@ -33,4 +33,7 @@ public class Reservation {
 
     @Column(name = "end_reservation", nullable = false)
     private java.sql.Timestamp endReservation;
+
+//    @Column(columnDefinition = "is_expired boolean default false not null")
+//    private boolean isExpired;
 }

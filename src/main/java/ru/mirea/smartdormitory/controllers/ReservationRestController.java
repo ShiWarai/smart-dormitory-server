@@ -6,13 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import ru.mirea.smartdormitory.model.entities.Object;
 import ru.mirea.smartdormitory.model.entities.Reservation;
+import ru.mirea.smartdormitory.model.types.ObjectType;
 import ru.mirea.smartdormitory.model.types.RoleType;
 import ru.mirea.smartdormitory.services.ObjectService;
 import ru.mirea.smartdormitory.services.ReservationService;
 import ru.mirea.smartdormitory.services.ResidentService;
 import ru.mirea.smartdormitory.services.StatusTypeService;
-import ru.mirea.smartdormitory.model.entities.Object;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -39,21 +40,22 @@ public class ReservationRestController {
     }
 
     @PostMapping(value = "/reservation/add", consumes = {"application/json"})
-    public ResponseEntity<?> createReservation(Authentication authentication, @RequestBody Reservation reservation) {
+    public ResponseEntity<?> createReservation(@RequestBody Reservation reservation) {
         Timestamp time = new Timestamp(System.currentTimeMillis());
         Object object = objectService.findById(reservation.getObjectId());
+        ObjectType objectType = object.getType();
 
-        if(object.getStatusId() != statusTypeService.findByName("ready").getId())
-            return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
-
-        Reservation reservation_created = reservationService.create(reservation);
-        if(reservation_created != null) {
-            if(reservation_created.getStartReservation().before(time) && reservation_created.getEndReservation().after(time)) {
-                object.setStatusId(statusTypeService.findByName("busy").getId());
-                objectService.update(object.getId(), object);
-            }
+        if(objectType.getReservationLimit() != null) {
+            // Считаем кол-во
+            int count = reservationService.findActiveByObjectId(object.getId()).size();
+            if((count + 1) > object.getType().getReservationLimit())
+                return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
         }
-        return new ResponseEntity<Long>(reservation_created.getId(), HttpStatus.CREATED);
+
+        if(reservation.getEndReservation().after(time))
+            return new ResponseEntity<Long>(reservationService.create(reservation).getId(), HttpStatus.OK);
+        else
+            return new ResponseEntity<>(HttpStatus.REQUEST_TIMEOUT);
     }
 
     @GetMapping(value="/reservation/get/{id}")
@@ -70,23 +72,6 @@ public class ReservationRestController {
         return reservations != null && !reservations.isEmpty()
                 ? new ResponseEntity<>(reservations, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-    @GetMapping(value="/reservation/check/{id}")
-    public ResponseEntity<?> checkReservation(@PathVariable Long id) {
-        Reservation reservation = reservationService.findById(id);
-        Timestamp time = new Timestamp(System.currentTimeMillis());
-        if(reservation != null)
-            if(reservation.getStartReservation().before(time) && reservation.getEndReservation().after(time))
-                return new ResponseEntity<>(HttpStatus.OK);
-            else {
-                Object object = objectService.findById(reservation.getObjectId());
-                object.setStatusId(statusTypeService.findByName("ready").getId());
-                objectService.update(object.getId(), object);
-                return new ResponseEntity<>(HttpStatus.REQUEST_TIMEOUT);
-            }
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/reservation/delete/{id}")

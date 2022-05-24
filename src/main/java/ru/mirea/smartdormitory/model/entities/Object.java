@@ -27,10 +27,10 @@ public class Object {
     @Column(columnDefinition = "description TEXT")
     private String description;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "type_id", insertable = false, updatable = false)
-//    @JsonIgnore
-//    private ObjectType type;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "type_id", insertable = false, updatable = false)
+    @JsonIgnore
+    private ObjectType type;
 
     @Column(name = "type_id", nullable = false)
     private Long typeId;

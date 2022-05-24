@@ -7,5 +7,4 @@ import ru.mirea.smartdormitory.model.entities.Resident;
 @Repository
 public interface IResidentRepository extends JpaRepository<Resident, Long> {
     Resident findResidentByStudentId(String student_id);
-    Resident findResidentById(Long id);
 }

@@ -20,4 +20,7 @@ public class ObjectType {
 
     @Column(name = "name", unique = true, nullable = false)
     private String name;
+
+    @Column(name = "reservation_limit", nullable = true)
+    private Long reservationLimit;
 }

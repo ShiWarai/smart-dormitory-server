@@ -7,14 +7,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ru.mirea.smartdormitory.model.entities.Object;
+import ru.mirea.smartdormitory.model.entities.Reservation;
 import ru.mirea.smartdormitory.model.types.ObjectType;
 import ru.mirea.smartdormitory.model.types.RoleType;
 import ru.mirea.smartdormitory.model.types.StatusType;
-import ru.mirea.smartdormitory.services.ObjectService;
-import ru.mirea.smartdormitory.services.ObjectTypeService;
-import ru.mirea.smartdormitory.services.ResidentService;
-import ru.mirea.smartdormitory.services.StatusTypeService;
+import ru.mirea.smartdormitory.services.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -24,6 +23,7 @@ public class ObjectRestController {
     private final ResidentService residentService;
     private final StatusTypeService statusTypeService;
     private final ObjectTypeService objectTypeService;
+    private final ReservationService reservationService;
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -31,11 +31,13 @@ public class ObjectRestController {
     public ObjectRestController(ObjectService objectService,
                                 ResidentService residentService,
                                 StatusTypeService statusTypeService,
-                                ObjectTypeService objectTypeService) {
+                                ObjectTypeService objectTypeService,
+                                ReservationService reservationService) {
         this.objectService = objectService;
         this.residentService = residentService;
         this.statusTypeService = statusTypeService;
         this.objectTypeService = objectTypeService;
+        this.reservationService = reservationService;
     }
 
     @PostMapping(value = "/object/add", consumes = {"application/json"})
@@ -75,7 +77,7 @@ public class ObjectRestController {
     @PutMapping(value="/object/set_status/{id}/{status_id}")
     public ResponseEntity<?> setObjectStatus(Authentication authentication, @PathVariable Long id, @PathVariable Long status_id) {
         RoleType role = residentService.getResidentRoleByStudentId(authentication.getName());
-        if(role == RoleType.STUFF || role == RoleType.GUARD || role == RoleType.COMMANDANT) {
+        if(role.ordinal() >= RoleType.STUFF.ordinal()) {
             if(statusTypeService.findById(status_id) != null) {
                 Object object = objectService.findById(id);
                 object.setStatusId(status_id);
@@ -89,6 +91,57 @@ public class ObjectRestController {
         }
         else
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
+    private List<Long> getActiveByObject(Long objectId) {
+        List<Long> currentReservationIds = new ArrayList<Long>();
+
+        List<Reservation> activeReservations = reservationService.findActiveByObjectId(objectId);
+
+        for (Reservation reservation : activeReservations) {
+            currentReservationIds.add(reservation.getId());
+        }
+
+        return currentReservationIds;
+    }
+
+    private List<Long> getByObject(Long objectId) {
+        List<Long> currentReservationIds = new ArrayList<Long>();
+
+        List<Reservation> reservations = reservationService.findByObjectId(objectId);
+
+        for (Reservation reservation : reservations) {
+            currentReservationIds.add(reservation.getId());
+        }
+
+        return currentReservationIds;
+    }
+
+    @GetMapping(value= "/object/get_active_reservations/{id}")
+    public ResponseEntity<?> getActiveReservations(@PathVariable Long id) {
+        if(objectService.findById(id) == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        List<Long> activeReservations = getActiveByObject(id);
+        return new ResponseEntity<List<Long>>(activeReservations, HttpStatus.OK);
+    }
+
+    @GetMapping(value= "/object/get_all_reservations/{id}")
+    public ResponseEntity<?> getReservations(@PathVariable Long id) {
+        if(objectService.findById(id) == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        List<Long> reservations = getByObject(id);
+        return new ResponseEntity<List<Long>>(reservations, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value= "/object/delete_reservations/{id}")
+    public ResponseEntity<?> deleteReservations(@PathVariable Long id) {
+        if(objectService.findById(id) == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        reservationService.deleteAllByObjectId(id);
+        return new ResponseEntity<>( HttpStatus.OK);
     }
 
     @PutMapping("/object/update/{id}")
@@ -122,7 +175,7 @@ public class ObjectRestController {
     }
 
     @GetMapping(value="/object_types")
-    public ResponseEntity<List<ObjectType>> getObjectTypes() {
+    public ResponseEntity<?> getObjectTypes() {
         final List<ObjectType> objectTypes = objectTypeService.getAll();
         return objectTypes != null && !objectTypes.isEmpty()
                 ? new ResponseEntity<>(objectTypes, HttpStatus.OK)
@@ -130,7 +183,7 @@ public class ObjectRestController {
     }
 
     @GetMapping(value="/status_types")
-    public ResponseEntity<List<StatusType>> getStatusTypes() {
+    public ResponseEntity<?> getStatusTypes() {
         final List<StatusType> statusTypes = statusTypeService.getAll();
         return statusTypes != null && !statusTypes.isEmpty()
                 ? new ResponseEntity<>(statusTypes, HttpStatus.OK)

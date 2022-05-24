@@ -24,10 +24,10 @@ public class Room {
     @Column(name = "floor", nullable = false)
     private String floor;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "type_id", insertable = false, updatable = false)
-//    @JsonIgnore
-//    private RoomType type;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "type_id", insertable = false, updatable = false)
+    @JsonIgnore
+    private RoomType type;
 
     @Column(name = "type_id", nullable = false)
     private Long type_id;
