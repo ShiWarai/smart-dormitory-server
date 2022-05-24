@@ -26,7 +26,6 @@ public class ResidentRestController {
 
     @PostMapping(value = "/resident/add", consumes = {"application/json"})
     public ResponseEntity<?> createResident(Authentication authentication, @RequestBody Resident resident) {
-        // Регистрация разрешена только коменданту и охране (для гостей)
         RoleType role = residentService.getResidentRoleByStudentId(authentication.getName());
         if(role == RoleType.COMMANDANT || role == RoleType.GUARD) {
             resident.setPinCode(encoder.encode(resident.getPinCode()));
