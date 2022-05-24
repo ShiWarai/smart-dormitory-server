@@ -27,14 +27,17 @@ public class Object {
     @Column(columnDefinition = "description TEXT")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type_id", insertable = false, updatable = false)
-    @JsonIgnore
-    private ObjectType type;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "type_id", insertable = false, updatable = false)
+//    @JsonIgnore
+//    private ObjectType type;
 
     @Column(name = "type_id", nullable = false)
-    private Long type_id;
+    private Long typeId;
 
     @Column(columnDefinition = "status_id INTEGER default 0 not null")
-    private Long status_id;
+    private Long statusId;
+
+    @Column(name = "room_number", nullable = false)
+    private Long roomNumber;
 }

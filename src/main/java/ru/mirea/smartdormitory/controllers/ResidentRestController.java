@@ -37,7 +37,7 @@ public class ResidentRestController {
     }
 
     @GetMapping(value="/resident/get/{student_id}")
-    public ResponseEntity<Resident> getResidentBy(Authentication authentication, @PathVariable String student_id) {
+    public ResponseEntity<Resident> getResident(Authentication authentication, @PathVariable String student_id) {
         RoleType role = residentService.getResidentRoleByStudentId(authentication.getName());
         if(role == RoleType.COMMANDANT || role == RoleType.GUARD || authentication.getName().equals(student_id))
         {
@@ -51,7 +51,7 @@ public class ResidentRestController {
     }
 
     @GetMapping(value="/resident/get_all")
-    public ResponseEntity<List<Resident>> readResidents(Authentication authentication) {
+    public ResponseEntity<List<Resident>> getResidents(Authentication authentication) {
         RoleType role = residentService.getResidentRoleByStudentId(authentication.getName());
         if(role == RoleType.COMMANDANT || role == RoleType.GUARD)
         {
@@ -87,11 +87,12 @@ public class ResidentRestController {
     public ResponseEntity<?> deleteResident(Authentication authentication, @PathVariable String student_id) {
         RoleType role = residentService.getResidentRoleByStudentId(authentication.getName());
 
-        if((role == RoleType.COMMANDANT) || (authentication.getName().equals(student_id)))
-            if(residentService.findResidentByStudentId(student_id) != null && residentService.delete(residentService.findResidentByStudentId(student_id).getId()))
+        if((role == RoleType.COMMANDANT) || (authentication.getName().equals(student_id))) {
+            if (residentService.findResidentByStudentId(student_id) != null && residentService.delete(residentService.findResidentByStudentId(student_id).getId()))
                 return new ResponseEntity<>(HttpStatus.OK);
             else
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         else
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
