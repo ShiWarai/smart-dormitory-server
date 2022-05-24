@@ -6,4 +6,5 @@ import ru.mirea.smartdormitory.model.types.StatusType;
 
 @Repository
 public interface IStatusTypeRepository extends JpaRepository<StatusType, Long> {
+    StatusType findByName(String name);
 }

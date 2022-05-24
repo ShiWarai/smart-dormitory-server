@@ -22,7 +22,7 @@ public class Reservation {
     @Column(name = "object_id", nullable = false)
     private Long objectId;
 
-    @Column(name = "resident_ id", nullable = false)
+    @Column(name = "resident_id", nullable = false)
     private Long residentId;
 
     @Column(columnDefinition = "reason TEXT")
