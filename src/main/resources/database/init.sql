@@ -59,6 +59,9 @@ create table if not exists room
     on update cascade on delete restrict
 );
 
+create unique index if not exists room_number_uindex
+    on room (number);
+
 create table if not exists object
 (
     id          serial
@@ -82,9 +85,6 @@ create table if not exists object
 
 create unique index if not exists object_id_uindex
     on object (id);
-
-create unique index if not exists room_number_uindex
-    on room (number);
 
 create table if not exists resident
 (
@@ -132,7 +132,9 @@ create unique index if not exists reservation_id_uindex
     on reservation (id);
 
 INSERT INTO public.status_type (id, name)
-VALUES (100, 'ready');
+VALUES (100, 'ready')
+ON CONFLICT DO NOTHING;
 
 INSERT INTO public.status_type (id, name)
-VALUES (200, 'busy');
+VALUES (200, 'busy')
+ON CONFLICT DO NOTHING;
