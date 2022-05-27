@@ -74,8 +74,9 @@ public class ObjectRestController {
     @PutMapping(value="/status/{id}/{status_id}")
     @PreAuthorize("hasAnyAuthority('STUFF', 'GUARD', 'COMMANDANT')")
     public ResponseEntity<?> setObjectStatus(@PathVariable Long id, @PathVariable Long status_id) {
-        if(statusTypeService.findById(status_id) != null) {
-            Object object = objectService.findById(id);
+        Object object = objectService.findById(id);
+
+        if(object != null && statusTypeService.findById(status_id) != null) {
             object.setStatusId(status_id);
             objectService.update(id, object);
 
