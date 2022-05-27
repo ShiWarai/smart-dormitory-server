@@ -1,6 +1,9 @@
 package ru.mirea.smartdormitory.configs;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -14,17 +17,17 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableAsync
 public class Config {
-//
-//    @Bean
-//    public HikariDataSource dataSource() {
-//        HikariConfig config = new HikariConfig();
-//        config.setDriverClassName("org.postgresql.Driver");
-//        config.setJdbcUrl("jdbc:postgresql://localhost:5432/postgres");
-//        config.setUsername("shiwarai");
-//        config.setPassword("shiwarai");
-//        return new HikariDataSource(config);
-//    }
-//
+
+    @Bean
+    public HikariDataSource dataSource() {
+        HikariConfig config = new HikariConfig();
+        config.setDriverClassName("org.postgresql.Driver");
+        config.setJdbcUrl("jdbc:postgresql://localhost:5432/postgres");
+        config.setUsername("shiwarai");
+        config.setPassword("shiwarai");
+        return new HikariDataSource(config);
+    }
+
 //    @Bean
 //    public LocalSessionFactoryBean sessionFactoryBean(DataSource dataSource) {
 //        LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();

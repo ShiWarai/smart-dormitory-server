@@ -3,6 +3,7 @@ package ru.mirea.smartdormitory.model.types;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -12,7 +13,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ObjectType {
-
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,4 +23,11 @@ public class ObjectType {
 
     @Column(name = "reservation_limit", nullable = true)
     private Long reservationLimit;
+
+    @Column(name = "schedule")
+    private String schedule;
+
+    public void setSchedule(String schedule) {
+        this.schedule = schedule;
+    }
 }

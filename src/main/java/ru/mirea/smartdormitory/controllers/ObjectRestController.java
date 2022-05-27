@@ -144,7 +144,7 @@ public class ObjectRestController {
         Object old_object = objectService.findById(id);
         if(old_object != null) {
             object.setId(id);
-            return new ResponseEntity<Object>(objectService.create(object), HttpStatus.OK);
+            return new ResponseEntity<Object>(objectService.update(object.getId(), object), HttpStatus.OK);
         }
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -59,7 +59,7 @@ public class ResidentService extends AbstractService<Resident, IResidentReposito
     }
 
     @Bean
-    public void createDef(){
+    public void createBaseResidents(){
         Resident resident = new Resident();
         resident.setSurname("The");
         resident.setName("Admin");

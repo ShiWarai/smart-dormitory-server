@@ -12,8 +12,9 @@ create table if not exists object_type
     constraint object_type_pk
     primary key,
     name              varchar(32) not null,
-    reservation_limit integer
-);
+    reservation_limit integer,
+    schedule          text
+    );
 
 create unique index if not exists object_type_id_uindex
     on object_type (id);
@@ -27,7 +28,7 @@ create table if not exists status_type
     constraint status_pk
     primary key,
     name varchar(16)
-);
+    );
 
 create unique index if not exists status_id_uindex
     on status_type (id);
@@ -41,7 +42,7 @@ create table if not exists room_type
     constraint room_type_pk
     primary key,
     name varchar(32) not null
-);
+    );
 
 create unique index if not exists room_type_id_uindex
     on room_type (id);
@@ -81,7 +82,7 @@ create table if not exists object
     constraint object_room_number_fk
     references room (number)
     on update cascade on delete cascade
-);
+    );
 
 create unique index if not exists object_id_uindex
     on object (id);
@@ -130,11 +131,3 @@ create table if not exists reservation
 
 create unique index if not exists reservation_id_uindex
     on reservation (id);
-
-INSERT INTO public.status_type (id, name)
-VALUES (100, 'ready')
-ON CONFLICT DO NOTHING;
-
-INSERT INTO public.status_type (id, name)
-VALUES (200, 'busy')
-ON CONFLICT DO NOTHING;

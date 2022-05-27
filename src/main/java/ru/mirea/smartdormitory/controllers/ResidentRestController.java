@@ -63,7 +63,7 @@ public class ResidentRestController {
             if(old_resident != null) {
                 resident.setId(old_resident.getId());
                 resident.setStudentId(old_resident.getStudentId());
-                return new ResponseEntity<Resident>(residentService.create(resident), HttpStatus.OK);
+                return new ResponseEntity<Resident>(residentService.update(resident.getId(), resident), HttpStatus.OK);
             }
             else
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
