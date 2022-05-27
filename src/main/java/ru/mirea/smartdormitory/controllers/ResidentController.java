@@ -32,11 +32,11 @@ public class ResidentController extends AbstractController<Resident, IResidentRe
 
     @GetMapping("/view_page/{student_id}")
     public String editResident(@PathVariable String student_id, Authentication authentication, Model model) {
-        RoleType role = residentService.getResidentRoleByStudentId(authentication.getName());
+        RoleType role = residentService.getByStudentId(authentication.getName());
         if(role.ordinal() >= RoleType.GUARD.ordinal() || authentication.getName().equals(student_id))
         {
             model.addAttribute("userRole", role.name());
-            model.addAttribute("resident", residentService.findResidentByStudentId(student_id));
+            model.addAttribute("resident", residentService.findByStudentId(student_id));
             return "view";
         }
         else

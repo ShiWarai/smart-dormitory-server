@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ru.mirea.smartdormitory.model.entities.Object;
 import ru.mirea.smartdormitory.model.entities.Reservation;
@@ -13,33 +12,28 @@ import ru.mirea.smartdormitory.model.types.RoleType;
 import ru.mirea.smartdormitory.services.ObjectService;
 import ru.mirea.smartdormitory.services.ReservationService;
 import ru.mirea.smartdormitory.services.ResidentService;
-import ru.mirea.smartdormitory.services.StatusTypeService;
 
 import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
+@RequestMapping(value = "/reservation")
 public class ReservationRestController {
 
     private final ReservationService reservationService;
     private final ObjectService objectService;
-    private final StatusTypeService statusTypeService;
     private final ResidentService residentService;
-
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @Autowired
     public ReservationRestController(ReservationService reservationService,
                                      ObjectService objectService,
-                                     StatusTypeService statusTypeService,
                                      ResidentService residentService) {
         this.reservationService = reservationService;
         this.objectService = objectService;
-        this.statusTypeService = statusTypeService;
         this.residentService = residentService;
     }
 
-    @PostMapping(value = "/reservation/add", consumes = {"application/json"})
+    @PostMapping(value = "/", consumes = {"application/json"})
     public ResponseEntity<?> createReservation(@RequestBody Reservation reservation) {
         Timestamp time = new Timestamp(System.currentTimeMillis());
         Object object = objectService.findById(reservation.getObjectId());
@@ -58,7 +52,7 @@ public class ReservationRestController {
             return new ResponseEntity<>(HttpStatus.REQUEST_TIMEOUT);
     }
 
-    @GetMapping(value="/reservation/get/{id}")
+    @GetMapping(value="/{id}")
     public ResponseEntity<Reservation> getReservation(@PathVariable Long id) {
         Reservation reservation = reservationService.findById(id);
         return reservation != null
@@ -66,7 +60,7 @@ public class ReservationRestController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping(value="/reservation/get_all")
+    @GetMapping(value="/all")
     public ResponseEntity<List<Reservation>> getReservations() {
         final List<Reservation> reservations = reservationService.getAll();
         return reservations != null && !reservations.isEmpty()
@@ -74,12 +68,12 @@ public class ReservationRestController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/reservation/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteReservation(Authentication authentication, @PathVariable Long id) {
-        RoleType role = residentService.getResidentRoleByStudentId(authentication.getName());
+        RoleType role = residentService.getByStudentId(authentication.getName());
         Reservation reservation = reservationService.findById(id);
 
-        if(role == RoleType.STUFF || role == RoleType.GUARD || role == RoleType.COMMANDANT) {
+        if(role.ordinal() >= RoleType.STUFF.ordinal()) {
             if (reservationService.findById(id) != null && reservationService.delete(id))
                 return new ResponseEntity<>(HttpStatus.OK);
             else

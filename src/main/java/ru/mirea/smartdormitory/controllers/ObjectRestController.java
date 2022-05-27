@@ -3,20 +3,18 @@ package ru.mirea.smartdormitory.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ru.mirea.smartdormitory.model.entities.Object;
 import ru.mirea.smartdormitory.model.entities.Reservation;
-import ru.mirea.smartdormitory.model.types.ObjectType;
-import ru.mirea.smartdormitory.model.types.RoleType;
-import ru.mirea.smartdormitory.model.types.StatusType;
 import ru.mirea.smartdormitory.services.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping(value = "/object")
 public class ObjectRestController {
 
     private final ObjectService objectService;
@@ -40,17 +38,13 @@ public class ObjectRestController {
         this.reservationService = reservationService;
     }
 
-    @PostMapping(value = "/object/add", consumes = {"application/json"})
-    public ResponseEntity<?> createObject(Authentication authentication, @RequestBody Object object) {
-        RoleType role = residentService.getResidentRoleByStudentId(authentication.getName());
-        if(role == RoleType.STUFF) {
-            return new ResponseEntity<Long>(objectService.create(object).getId(), HttpStatus.CREATED);
-        }
-        else
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    @PostMapping(value = "/", consumes = {"application/json"})
+    @PreAuthorize("hasAuthority('STUFF')")
+    public ResponseEntity<?> createObject(@RequestBody Object object) {
+        return new ResponseEntity<Long>(objectService.create(object).getId(), HttpStatus.CREATED);
     }
 
-    @GetMapping(value="/object/get/{id}")
+    @GetMapping(value="/{id}")
     public ResponseEntity<Object> getObject(@PathVariable Long id) {
         Object object = objectService.findById(id);
         return object != null
@@ -58,7 +52,7 @@ public class ObjectRestController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping(value="/object/get_all")
+    @GetMapping(value="/all")
     public ResponseEntity<List<Object>> getObjects() {
         final List<Object> objects = objectService.getAll();
         return objects != null && !objects.isEmpty()
@@ -66,7 +60,7 @@ public class ObjectRestController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping(value="/object/get_status/{id}")
+    @GetMapping(value="/status/{id}")
     public ResponseEntity<Long> getObjectStatus(@PathVariable Long id) {
         Object object = objectService.findById(id);
         return object != null
@@ -74,23 +68,22 @@ public class ObjectRestController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PutMapping(value="/object/set_status/{id}/{status_id}")
-    public ResponseEntity<?> setObjectStatus(Authentication authentication, @PathVariable Long id, @PathVariable Long status_id) {
-        RoleType role = residentService.getResidentRoleByStudentId(authentication.getName());
-        if(role.ordinal() >= RoleType.STUFF.ordinal()) {
-            if(statusTypeService.findById(status_id) != null) {
-                Object object = objectService.findById(id);
-                object.setStatusId(status_id);
-                objectService.update(id, object);
-                return object != null
-                        ? new ResponseEntity<>(HttpStatus.OK)
-                        : new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-            else
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @PutMapping(value="/status/{id}/{status_id}")
+    @PreAuthorize("hasAnyAuthority('STUFF', 'GUARD', 'COMMANDANT')")
+    public ResponseEntity<?> setObjectStatus(@PathVariable Long id, @PathVariable Long status_id) {
+        if(statusTypeService.findById(status_id) != null) {
+            Object object = objectService.findById(id);
+            object.setStatusId(status_id);
+            objectService.update(id, object);
+
+            // Call MQTT
+
+            return object != null
+                    ? new ResponseEntity<>(HttpStatus.OK)
+                    : new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         else
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     private List<Long> getActiveByObject(Long objectId) {
@@ -117,7 +110,7 @@ public class ObjectRestController {
         return currentReservationIds;
     }
 
-    @GetMapping(value= "/object/get_active_reservations/{id}")
+    @GetMapping(value= "/active_reservations/{id}")
     public ResponseEntity<?> getActiveReservations(@PathVariable Long id) {
         if(objectService.findById(id) == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -126,7 +119,7 @@ public class ObjectRestController {
         return new ResponseEntity<List<Long>>(activeReservations, HttpStatus.OK);
     }
 
-    @GetMapping(value= "/object/get_all_reservations/{id}")
+    @GetMapping(value= "/reservations/{id}")
     public ResponseEntity<?> getReservations(@PathVariable Long id) {
         if(objectService.findById(id) == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -135,7 +128,8 @@ public class ObjectRestController {
         return new ResponseEntity<List<Long>>(reservations, HttpStatus.OK);
     }
 
-    @DeleteMapping(value= "/object/delete_reservations/{id}")
+    @DeleteMapping(value= "/reservations/{id}")
+    @PreAuthorize("hasAuthority('STUFF')")
     public ResponseEntity<?> deleteReservations(@PathVariable Long id) {
         if(objectService.findById(id) == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -144,49 +138,24 @@ public class ObjectRestController {
         return new ResponseEntity<>( HttpStatus.OK);
     }
 
-    @PutMapping("/object/update/{id}")
-    public ResponseEntity<Object> updateObject(Authentication authentication, @PathVariable Long id, @RequestBody Object object) {
-        RoleType role = residentService.getResidentRoleByStudentId(authentication.getName());
-
-        if(role == RoleType.STUFF) {
-            Object old_object = objectService.findById(id);
-            if(old_object != null) {
-                object.setId(id);
-                return new ResponseEntity<Object>(objectService.create(object), HttpStatus.OK);
-            }
-            else
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('STUFF')")
+    public ResponseEntity<Object> updateObject(@PathVariable Long id, @RequestBody Object object) {
+        Object old_object = objectService.findById(id);
+        if(old_object != null) {
+            object.setId(id);
+            return new ResponseEntity<Object>(objectService.create(object), HttpStatus.OK);
         }
         else
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/object/delete/{id}")
-    public ResponseEntity<?> deleteObject(Authentication authentication, @PathVariable Long id) {
-        RoleType role = residentService.getResidentRoleByStudentId(authentication.getName());
-        if(role == RoleType.STUFF) {
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('STUFF')")
+    public ResponseEntity<?> deleteObject(@PathVariable Long id) {
             if (objectService.findById(id) != null && objectService.delete(id))
                 return new ResponseEntity<>(HttpStatus.OK);
             else
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        else
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-    }
-
-    @GetMapping(value="/object_types")
-    public ResponseEntity<?> getObjectTypes() {
-        final List<ObjectType> objectTypes = objectTypeService.getAll();
-        return objectTypes != null && !objectTypes.isEmpty()
-                ? new ResponseEntity<>(objectTypes, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-    @GetMapping(value="/status_types")
-    public ResponseEntity<?> getStatusTypes() {
-        final List<StatusType> statusTypes = statusTypeService.getAll();
-        return statusTypes != null && !statusTypes.isEmpty()
-                ? new ResponseEntity<>(statusTypes, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

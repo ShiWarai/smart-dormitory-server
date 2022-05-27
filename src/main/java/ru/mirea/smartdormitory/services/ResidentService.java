@@ -28,18 +28,17 @@ public class ResidentService extends AbstractService<Resident, IResidentReposito
         this.residentRepository = repository;
     }
 
-    public RoleType getResidentRoleByStudentId(String student_id) {
-        return RoleType.valueOf(findResidentByStudentId(student_id).getRole());
+    @Override
+    public Resident create(Resident entity) {
+        entity.setPinCode(bCryptPasswordEncoder.encode(entity.getPinCode()));
+        return residentRepository.save(entity);
     }
 
-    public Long getResidentId(Authentication authentication) {
-        if (authentication == null)
-            return -1l;
-        else
-            return ((Resident) loadUserByUsername(authentication.getName())).getId();
+    public RoleType getByStudentId(String student_id) {
+        return RoleType.valueOf(findByStudentId(student_id).getRole());
     }
 
-    public Resident findResidentByStudentId(String username){
+    public Resident findByStudentId(String username){
         return residentRepository.findResidentByStudentId(username);
     }
 
@@ -72,13 +71,9 @@ public class ResidentService extends AbstractService<Resident, IResidentReposito
         }
     }
 
-    public void addResident(Resident resident) {
-        residentRepository.save(resident);
-    }
-
     @Override
     public UserDetails loadUserByUsername(String student_id) throws UsernameNotFoundException {
-        var user =  residentRepository.findResidentByStudentId(student_id);
+        UserDetails user =  residentRepository.findResidentByStudentId(student_id);
         if(user != null){
             return user;
         }
