@@ -42,22 +42,6 @@ public class ResidentService extends AbstractService<Resident, IResidentReposito
         return residentRepository.findResidentByStudentId(username);
     }
 
-    public void create(String student_id, String pin_code, String surname, String name, String patronymic, Date birthday, String role) {
-        Resident resident = new Resident();
-
-        resident.setSurname(surname);
-        resident.setName(name);
-        if(patronymic.length() > 0)
-            resident.setPatronymic(patronymic);
-        resident.setBirthdate(birthday);
-        resident.setStudentId(student_id);
-        resident.setPinCode(bCryptPasswordEncoder.encode(pin_code));
-        resident.setRole(role);
-
-        residentRepository.save(resident);
-        System.out.println(residentRepository.findResidentByStudentId(student_id));
-    }
-
     @Bean
     public void createBaseResidents(){
         Resident resident = new Resident();
