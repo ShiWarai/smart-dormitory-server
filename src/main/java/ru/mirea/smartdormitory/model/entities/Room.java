@@ -22,7 +22,7 @@ public class Room {
     private Long number;
 
     @Column(name = "floor", nullable = false)
-    private String floor;
+    private Long floor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type_id", insertable = false, updatable = false)

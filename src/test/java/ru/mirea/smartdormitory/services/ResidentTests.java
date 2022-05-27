@@ -1,13 +1,12 @@
 package ru.mirea.smartdormitory.services;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.mirea.smartdormitory.model.entities.Resident;
@@ -15,36 +14,34 @@ import ru.mirea.smartdormitory.model.repositories.IResidentRepository;
 import ru.mirea.smartdormitory.model.types.RoleType;
 
 @ExtendWith(MockitoExtension.class)
-@RunWith(MockitoJUnitRunner.class)
-public class ResidentsTests {
+public class ResidentTests {
 
     @Mock
-    private IResidentRepository userRepository;
-    private ResidentService userService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+    private IResidentRepository residentRepository;
+    private ResidentService residentService;
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @BeforeEach
     public void setUp() {
-        userService = new ResidentService(userRepository);
+        residentService = new ResidentService(residentRepository);
     }
 
     @Test
     void createResident(){
 
-        String id = "2284856";
-
         Resident resident = new Resident();
 
         resident.setSurname("New");
         resident.setName("Resident");
-        resident.setStudentId(id);
+        resident.setStudentId("2284856");
         resident.setRole(RoleType.STUDENT.name());
-        resident.setPinCode(bCryptPasswordEncoder.encode("1111"));
+        resident.setPinCode(encoder.encode("1111"));
+        residentService.create(resident);
 
-        userService.create(resident);
+        ArgumentCaptor<Resident> residentArgumentCaptor = ArgumentCaptor.forClass(Resident.class);
+        Mockito.verify(residentRepository).save(residentArgumentCaptor.capture());
 
-        Mockito.when(userRepository.findResidentByStudentId(id)).thenReturn(resident);
-        Resident foundUser = userService.findByStudentId(id);
-        Assertions.assertEquals(resident, foundUser);
+        Resident residentCaptorValue = residentArgumentCaptor.getValue();
+        Assertions.assertThat(residentCaptorValue).isEqualTo(resident);
     }
 }
