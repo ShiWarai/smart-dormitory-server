@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.mirea.smartdormitory.model.entities.Resident;
 import ru.mirea.smartdormitory.model.repositories.IResidentRepository;
 import ru.mirea.smartdormitory.model.types.RoleType;
@@ -20,6 +21,7 @@ public class ResidentsTests {
     @Mock
     private IResidentRepository userRepository;
     private ResidentService userService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @BeforeEach
     public void setUp() {
@@ -37,11 +39,12 @@ public class ResidentsTests {
         resident.setName("Resident");
         resident.setStudentId(id);
         resident.setRole(RoleType.STUDENT.name());
+        resident.setPinCode(bCryptPasswordEncoder.encode("1111"));
 
         userService.create(resident);
 
         Mockito.when(userRepository.findResidentByStudentId(id)).thenReturn(resident);
-        Resident foundUser = userService.findResidentByStudentId(id);
+        Resident foundUser = userService.findByStudentId(id);
         Assertions.assertEquals(resident, foundUser);
     }
 }
