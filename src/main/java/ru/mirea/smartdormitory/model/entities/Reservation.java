@@ -1,9 +1,11 @@
 package ru.mirea.smartdormitory.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.mirea.smartdormitory.model.types.ObjectType;
 
 import javax.persistence.*;
 
@@ -19,8 +21,18 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "object_id", insertable = false, updatable = false)
+    @JsonIgnore
+    private Object object;
+
     @Column(name = "object_id", nullable = false)
     private Long objectId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "resident_id", insertable = false, updatable = false)
+    @JsonIgnore
+    private Resident resident;
 
     @Column(name = "resident_id", nullable = false)
     private Long residentId;
@@ -33,7 +45,4 @@ public class Reservation {
 
     @Column(name = "end_reservation", nullable = false)
     private java.sql.Timestamp endReservation;
-
-//    @Column(columnDefinition = "is_expired boolean default false not null")
-//    private boolean isExpired;
 }

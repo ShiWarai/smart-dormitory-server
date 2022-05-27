@@ -1,5 +1,6 @@
 package ru.mirea.smartdormitory.controllers;
 
+import org.quartz.CronExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,9 @@ import ru.mirea.smartdormitory.model.entities.Object;
 import ru.mirea.smartdormitory.model.entities.Reservation;
 import ru.mirea.smartdormitory.services.*;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -92,7 +95,19 @@ public class ObjectRestController {
         List<Reservation> activeReservations = reservationService.findActiveByObjectId(objectId);
 
         for (Reservation reservation : activeReservations) {
-            currentReservationIds.add(reservation.getId());
+            String cronStr = reservation.getObject().getType().getSchedule();
+
+            if(cronStr != null) {
+                try {
+                    CronExpression expression = new CronExpression(cronStr);
+                    if (expression.isSatisfiedBy(new Date()))
+                        currentReservationIds.add(reservation.getId());
+                } catch (ParseException exp) {
+                    System.out.printf("WRONG CRON: %s\n", cronStr);
+                }
+            }
+            else
+                currentReservationIds.add(reservation.getId());
         }
 
         return currentReservationIds;

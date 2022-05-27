@@ -25,11 +25,11 @@ public class StatusTypeService extends AbstractService<StatusType, IStatusTypeRe
     @Bean
     public void createBaseStatuses(){
         StatusType ready = new StatusType(100L, "ready");
-        if (statusTypeRepository.findById(ready.getId())==null)
+        if (statusTypeRepository.findById(ready.getId()).isEmpty())
             statusTypeRepository.save(ready);
 
         StatusType busy = new StatusType(200L, "busy");
-        if (statusTypeRepository.findById(busy.getId())==null)
+        if (statusTypeRepository.findById(busy.getId()).isEmpty())
             statusTypeRepository.save(busy);
     }
 }

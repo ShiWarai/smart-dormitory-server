@@ -40,7 +40,7 @@ public class ObjectTypeRestController {
 
         if(objectType != null)
         {
-            objectType.setSchedule(cron_schedule);
+            objectType.setSchedule(!cron_schedule.equals("null") ? cron_schedule : null);
             objectTypeService.update(objectType.getId(), objectType);
 
             return new ResponseEntity<>(HttpStatus.OK);
