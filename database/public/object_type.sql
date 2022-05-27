@@ -1,9 +1,11 @@
 create table object_type
 (
-    id   serial
+    id                serial
         constraint object_type_pk
             primary key,
-    name varchar(32) not null
+    name              varchar(32) not null,
+    reservation_limit integer,
+    schedule          text
 );
 
 alter table object_type

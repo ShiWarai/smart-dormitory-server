@@ -24,3 +24,4 @@ create unique index resident_id_uindex
 
 create unique index resident_student_id_uindex
     on resident (student_id);
+
