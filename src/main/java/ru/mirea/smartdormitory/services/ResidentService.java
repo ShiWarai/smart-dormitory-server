@@ -31,6 +31,24 @@ public class ResidentService extends AbstractService<Resident, IResidentReposito
         return residentRepository.save(entity);
     }
 
+    @Override
+    public Resident update(Long id, Resident entity) {
+        if(findById(id) != null) {
+            entity.setPinCode(bCryptPasswordEncoder.encode(entity.getPinCode()));
+            residentRepository.updatePropertiesByStudentId(entity.getStudentId(),
+                                                            entity.getSurname(),
+                                                            entity.getName(),
+                                                            entity.getPatronymic(),
+                                                            entity.getBirthdate(),
+                                                            entity.getPinCode(),
+                                                            entity.getRoomNumber(),
+                                                            entity.getRole());
+            return findById(id);
+        }
+        else
+            return null;
+    }
+
     public RoleType getRoleTypeByStudentId(String student_id) {
         return RoleType.valueOf(findByStudentId(student_id).getRole());
     }
