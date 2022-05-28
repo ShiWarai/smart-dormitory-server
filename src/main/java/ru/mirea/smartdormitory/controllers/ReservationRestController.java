@@ -70,7 +70,7 @@ public class ReservationRestController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteReservation(Authentication authentication, @PathVariable Long id) {
-        RoleType role = residentService.getByStudentId(authentication.getName());
+        RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
         Reservation reservation = reservationService.findById(id);
 
         if(role.ordinal() >= RoleType.STUFF.ordinal()) {

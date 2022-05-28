@@ -5,9 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.mirea.smartdormitory.model.entities.Resident;
 import ru.mirea.smartdormitory.model.repositories.IResidentRepository;
 import ru.mirea.smartdormitory.model.types.RoleType;
@@ -27,17 +25,39 @@ public class ResidentController extends AbstractController<Resident, IResidentRe
 
     @GetMapping("/me")
     public String getMy(Authentication authentication) {
-        return String.format("redirect:/residents/view_page/%s", authentication.getName());
+        return String.format("redirect:/residents/%s", authentication.getName());
     }
 
-    @GetMapping("/view_page/{student_id}")
-    public String editResidentPage(@PathVariable String student_id, Authentication authentication, Model model) {
-        RoleType role = residentService.getByStudentId(authentication.getName());
-        if(role.ordinal() >= RoleType.GUARD.ordinal() || authentication.getName().equals(student_id))
+    @GetMapping("/{student_id}")
+    public String viewResident(@PathVariable String student_id, Authentication authentication, Model model) {
+        Resident resident = residentService.findByStudentId(student_id);
+        resident.setPinCode(null);
+
+        String fio = "";
+        if(resident.getSurname() != null)
+            fio += resident.getSurname() + " ";
+        if (resident.getName() != null)
+            fio += resident.getName() + " ";
+        if (resident.getPatronymic() != null)
+            fio += resident.getPatronymic();
+
+        model.addAttribute("fio", fio);
+        model.addAttribute("resident", resident);
+        return "resident";
+    }
+
+    @PostMapping("/{student_id}")
+    public String editResident(@PathVariable String student_id,
+                               Authentication authentication,
+                               @ModelAttribute("resident") Resident resident)
+    {
+        RoleType roleType = residentService.getRoleTypeByStudentId(authentication.getName());
+        if(roleType == RoleType.COMMANDANT || authentication.getName().equals(student_id))
         {
-            model.addAttribute("userRole", role.name());
-            model.addAttribute("resident", residentService.findByStudentId(student_id));
-            return "view";
+            if(roleType != RoleType.COMMANDANT)
+                resident.setRole(roleType.name());
+            residentService.update(residentService.findByStudentId(student_id).getId(), resident);
+            return "redirect:/me";
         }
         else
             return "error";

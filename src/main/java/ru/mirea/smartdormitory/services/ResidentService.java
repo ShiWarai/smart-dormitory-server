@@ -2,7 +2,6 @@ package ru.mirea.smartdormitory.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,8 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.mirea.smartdormitory.model.entities.Resident;
 import ru.mirea.smartdormitory.model.repositories.IResidentRepository;
 import ru.mirea.smartdormitory.model.types.RoleType;
-
-import java.sql.Date;
 
 @Service
 @Transactional
@@ -34,7 +31,7 @@ public class ResidentService extends AbstractService<Resident, IResidentReposito
         return residentRepository.save(entity);
     }
 
-    public RoleType getByStudentId(String student_id) {
+    public RoleType getRoleTypeByStudentId(String student_id) {
         return RoleType.valueOf(findByStudentId(student_id).getRole());
     }
 
