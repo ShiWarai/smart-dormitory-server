@@ -59,38 +59,30 @@
                 </nav>
                 <div class="container-fluid">
                     <div class="d-flex justify-content-between align-items-baseline">
-                        <h3 class="text-dark mb-4">Жители</h3><a class="btn btn-primary" role="button" style="margin-right: 20px;" href="/residents/create" th:if="${role == 'COMMANDANT'}">Создать</a>
+                        <h3 class="text-dark mb-4">Бронирования</h3><a class="btn btn-primary" role="button" style="margin-right: 20px;" href="/reservations/create">Создать</a>
                     </div>
                     <div class="card shadow">
                         <div class="card-body"><div id="dataTable" class="table-responsive table mt-2" role="grid" aria-describedby="dataTable_info">
     <table id="dataTable" class="table my-0">
         <thead>
             <tr>
-                <th>Имя</th>
-                <th th:if="${role == 'COMMANDANT' or role == 'GUARD'}">Номер студенческого</th>
-                <th>Роль</th>
-                <th>Комната</th>
-                <th>День рождения</th>
+                <th>ID</th>
+                <th>Объект</th>
+                <th>Бронирующий</th>
+                <th>Начало</th>
+                <th>Конец</th>
             </tr>
         </thead>
         <tbody>
-        <tr th:each="resident: ${residents}">
-            <td th:inline="text">[(${resident.surname + ' ' + resident.name + ' ' + resident.patronymic})]</td>
-            <td th:if="${role} == 'COMMANDANT' or role == 'GUARD'" th:text = "${resident.studentId}"></td>
-            <td th:text = "${resident.role}"></td>
-            <td th:text = "${resident.roomNumber}"></td>
-            <td th:text = "${resident.birthdate}"></td>
+        <tr th:each="reserv: ${reservations}">
+            <td th:text = "${reserv.id}"></td>
+            <td th:text = "${reserv.objectId}"></td>
+            <td th:text = "${reserv.residentId}"></td>
+            <td th:text = "${reserv.startReservation}"></td>
+            <td th:text = "${reserv.endReservation}"></td>
             <td>
-            <a class="btn btn-warning btn-sm" th:href="@{/residents/{id} (id=${resident.studentId})}" role="link">Изменить</a>
+            <a class="btn btn-warning btn-sm" th:href="@{/reservations/{id} (id=${reserv.id})}" role="link">Изменить</a>
             </td>
-            
-<!--             --<td>
-            <a th:href = "@{/pet/edit/{id} (id=${pet.id})}"
-               class = "btn btn-primary">Обновить</a>
-
-            <a th:href = "@{/pet/del/{id} (id=${pet.id})}"
-               class = "btn btn-danger">Удалить</a>
-            </td> -->
         </tr>
         </tbody>
     </table>
