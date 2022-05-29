@@ -57,7 +57,7 @@
                     </div>
                 </nav>
                 <div class="container-fluid">
-                    <h3 class="text-dark mb-4">Profile</h3>
+                    <h3 class="text-dark mb-4" th:text="${'Object №' + object.id}">Object №</h3>
                     <div class="row mb-3">
                         <div class="col-lg-12">
                             <div class="row mb-3 d-none">
@@ -91,17 +91,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col"><form th:action="@{/residents/{id} (id=${resident.studentId})}" th:object = "${resident}" method="POST">
-  <div class="form-group">
-    <label> Фамилия </label>
-    <input
-            type="text"
-            name="surname"
-            th:field="*{surname}"
-            class="form-control"
-            required
-    />
-  </div>
+                                <div class="col"><form th:action="@{/objects/{id} (id=${object.id})}" th:object = "${object}" method="POST">
   <div class="form-group">
     <label> Имя </label>
     <input
@@ -113,45 +103,23 @@
     />
   </div>
   <div class="form-group">
-    <label> Отчество </label>
+    <label> Тип </label>
     <input
-            type="text"
-            name="patronymic"
-            th:field="*{patronymic}"
-            class="form-control"
-    />
-  </div>
-  <div class="form-group">
-    <label> Дата рождения </label>
-    <input
-            type="date"
-            name="birthdate"
-            th:field="*{birthdate}"
+            type="number"
+            name="typeId"
+            th:field="*{typeId}"
             class="form-control"
             required
     />
   </div>
   <div class="form-group">
-    <label> Номер студенческого </label>
+    <label> Статус </label>
     <input
             type="text"
-            name="studentId"
-            th:field="*{studentId}"
-            class="form-control",
+            name="statusId"
+            th:field="*{statusId}"
+            class="form-control"
             readonly
-            required
-    />
-  </div>
-  <div class="form-group">
-    <label> ПИН-код </label>
-    <input
-            type="password"
-            name="pinCode"
-            th:field="*{pinCode}"
-            class="form-control"
-            maxlength="4"
-            minlength="4"
-            required
     />
   </div>
   <div class="form-group">
@@ -161,44 +129,14 @@
             name="roomNumber"
             th:field="*{roomNumber}"
             class="form-control"
+            required
     />
-  </div>
-  <div class="form-group">
-    <label> Роль </label>
-    <select
-            class="form-control"
-            type="text"
-            name="role"
-            th:field="*{role}"
-            id="dropOperator"
-            th:if="${role} == 'COMMANDANT'">
-      <option
-              th:each="roleType : ${T(ru.mirea.smartdormitory.model.types.RoleType).values()}"
-              th:value="${roleType.name()}"
-              th:text="${roleType.name()}"
-      ></option>
-    </select>
-          <select
-            class="form-control"
-            type="text"
-            name="role"
-            th:field="*{role}"
-            id="dropOperator"
-            th:if="${role} != 'COMMANDANT'"
-            disabled>
-      <option
-              th:each="roleType : ${T(ru.mirea.smartdormitory.model.types.RoleType).values()}"
-              th:value="${roleType.name()}"
-              th:text="${roleType.name()}"
-      ></option>
-    </select>
-    <input type="hidden" name="role" th:value="*{role}" th:if="${role} != 'COMMANDANT'">
   </div>
   <div class="box-footer" style="margin-top:16px">
     <button type="submit" class="btn btn-primary btn-lg">
       Подтвердить
     </button>
-    <a class="btn btn-danger btn-lg" th:href="@{/residents/delete/{id} (id=${resident.studentId})}" role="button" th:if="${role} == 'COMMANDANT'">Удалить</a>
+    <a class="btn btn-danger btn-lg" th:href="@{/object/delete/{id} (id=${object.id})}" role="button">Удалить</a>
   </div>
 </form></div>
                             </div>

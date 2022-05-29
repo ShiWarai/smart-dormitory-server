@@ -37,17 +37,7 @@ public class ResidentController extends AbstractController<Resident, IResidentRe
     @GetMapping("/list")
     public String viewResidents(Authentication authentication, Model model) {
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
-        Resident user = residentService.findByStudentId(authentication.getName());
 
-        String fio = "";
-        if(user.getSurname() != null)
-            fio += user.getSurname() + " ";
-        if (user.getName() != null)
-            fio += user.getName() + " ";
-        if (user.getPatronymic() != null)
-            fio += user.getPatronymic();
-
-        model.addAttribute("fio", fio);
         model.addAttribute("role", role.name());
         model.addAttribute("residents", residentService.getAll());
         return "residents";
@@ -56,20 +46,10 @@ public class ResidentController extends AbstractController<Resident, IResidentRe
     @GetMapping("/{student_id}")
     public String viewResident(@PathVariable String student_id, Authentication authentication, Model model) {
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
-        Resident user = residentService.findByStudentId(authentication.getName());
 
         Resident resident = residentService.findByStudentId(student_id);
         resident.setPinCode(null);
 
-        String fio = "";
-        if(user.getSurname() != null)
-            fio += user.getSurname() + " ";
-        if (user.getName() != null)
-            fio += user.getName() + " ";
-        if (user.getPatronymic() != null)
-            fio += user.getPatronymic();
-
-        model.addAttribute("fio", fio);
         model.addAttribute("role", role.name());
         model.addAttribute("resident", resident);
         return "resident";
@@ -93,7 +73,11 @@ public class ResidentController extends AbstractController<Resident, IResidentRe
                     resident.setPinCode(residentService.findByStudentId(resident.getStudentId()).getPinCode());
 
                 residentService.update(residentService.findByStudentId(student_id).getId(), resident);
-                return "redirect:/residents/me";
+
+                if(resident.getStudentId().equals(authentication.getName()))
+                    return "redirect:/residents/me";
+                else
+                    return "redirect:/residents/list";
             }
             else
                 return "redirect:/error";
