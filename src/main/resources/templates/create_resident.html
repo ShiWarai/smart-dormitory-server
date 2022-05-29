@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Table - Smart Dormitory</title>
+    <title>Profile - Smart Dormitory</title>
     <meta name="description" content="Для курсовой работы">
     <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css?h=36d5cff6e1f278b31ada41f03cc9d69b">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
@@ -57,43 +57,136 @@
                     </div>
                 </nav>
                 <div class="container-fluid">
-                    <div class="d-flex justify-content-between align-items-baseline">
-                        <h3 class="text-dark mb-4">Жители</h3><a class="btn btn-primary" role="button" style="margin-right: 20px;" href="/residents/create" th:if="${role == 'COMMANDANT'}">Создать</a>
-                    </div>
-                    <div class="card shadow">
-                        <div class="card-body"><div id="dataTable" class="table-responsive table mt-2" role="grid" aria-describedby="dataTable_info">
-    <table id="dataTable" class="table my-0">
-        <thead>
-            <tr>
-                <th>Имя</th>
-                <th th:if="${role == 'COMMANDANT' or role == 'GUARD'}">Номер студенческого</th>
-                <th>Роль</th>
-                <th>Комната</th>
-                <th>День рождения</th>
-            </tr>
-        </thead>
-        <tbody>
-        <tr th:each="resident: ${residents}">
-            <td th:inline="text">[(${resident.surname + ' ' + resident.name + ' ' + resident.patronymic})]</td>
-            <td th:if="${role} == 'COMMANDANT' or role == 'GUARD'" th:text = "${resident.studentId}"></td>
-            <td th:text = "${resident.role}"></td>
-            <td th:text = "${resident.roomNumber}"></td>
-            <td th:text = "${resident.birthdate}"></td>
-            <td>
-            <a class="btn btn-warning btn-sm" th:href="@{/residents/{id} (id=${resident.studentId})}" role="link">Изменить</a>
-            </td>
-            
-<!--             --<td>
-            <a th:href = "@{/pet/edit/{id} (id=${pet.id})}"
-               class = "btn btn-primary">Обновить</a>
-
-            <a th:href = "@{/pet/del/{id} (id=${pet.id})}"
-               class = "btn btn-danger">Удалить</a>
-            </td> -->
-        </tr>
-        </tbody>
-    </table>
-</div></div>
+                    <h3 class="text-dark mb-4">Создать сущность Житель</h3>
+                    <div class="row mb-3">
+                        <div class="col-lg-12">
+                            <div class="row mb-3 d-none">
+                                <div class="col">
+                                    <div class="card textwhite bg-primary text-white shadow">
+                                        <div class="card-body">
+                                            <div class="row mb-2">
+                                                <div class="col">
+                                                    <p class="m-0">Peformance</p>
+                                                    <p class="m-0"><strong>65.2%</strong></p>
+                                                </div>
+                                                <div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
+                                            </div>
+                                            <p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i>&nbsp;5% since last month</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card textwhite bg-success text-white shadow">
+                                        <div class="card-body">
+                                            <div class="row mb-2">
+                                                <div class="col">
+                                                    <p class="m-0">Peformance</p>
+                                                    <p class="m-0"><strong>65.2%</strong></p>
+                                                </div>
+                                                <div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
+                                            </div>
+                                            <p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i>&nbsp;5% since last month</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col"><form action="/residents/create" th:object = "${resident}" method="POST">
+  <div class="form-group">
+    <label> Фамилия </label>
+    <input
+            type="text"
+            name="surname"
+            th:field="*{surname}"
+            class="form-control"
+            required
+    />
+  </div>
+  <div class="form-group">
+    <label> Имя </label>
+    <input
+            type="text"
+            name="name"
+            th:field="*{name}"
+            class="form-control"
+            required
+    />
+  </div>
+  <div class="form-group">
+    <label> Отчество </label>
+    <input
+            type="text"
+            name="patronymic"
+            th:field="*{patronymic}"
+            class="form-control"
+    />
+  </div>
+  <div class="form-group">
+    <label> Дата рождения </label>
+    <input
+            type="date"
+            name="birthdate"
+            th:field="*{birthdate}"
+            class="form-control"
+            required
+    />
+  </div>
+  <div class="form-group">
+    <label> Номер студенческого </label>
+    <input
+            type="text"
+            name="studentId"
+            th:field="*{studentId}"
+            class="form-control"
+            maxlength="7"
+            minlength="7"
+            required
+    />
+  </div>
+  <div class="form-group">
+    <label> ПИН-код </label>
+    <input
+            type="password"
+            name="pinCode"
+            th:field="*{pinCode}"
+            class="form-control"
+            maxlength="4"
+            minlength="4"
+            required
+    />
+  </div>
+  <div class="form-group">
+    <label> Номер комнаты </label>
+    <input
+            type="number"
+            name="roomNumber"
+            th:field="*{roomNumber}"
+            class="form-control"
+    />
+  </div>
+  <div class="form-group">
+    <label> Роль </label>
+    <select
+            class="form-control"
+            type="text"
+            name="role"
+            th:field="*{role}"
+            id="dropOperator">
+      <option
+              th:each="roleType : ${T(ru.mirea.smartdormitory.model.types.RoleType).values()}"
+              th:value="${roleType.name()}"
+              th:text="${roleType.name()}"
+      ></option>
+    </select>
+  </div>
+  <div class="box-footer" style="margin-top:16px">
+    <button type="submit" class="btn btn-primary btn-lg">
+      Создать
+    </button>
+  </div>
+</form></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -43,6 +43,27 @@ public class ResidentController extends AbstractController<Resident, IResidentRe
         return "residents";
     }
 
+    @GetMapping("/create")
+    @PreAuthorize("hasAnyAuthority('COMMANDANT')")
+    public String viewCreationOfResident(Authentication authentication, Model model) {
+        RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
+
+        Resident resident = new Resident();
+
+        model.addAttribute("role", role.name());
+        model.addAttribute("resident", resident);
+        return "create_resident";
+    }
+
+    @PostMapping("/create")
+    @PreAuthorize("hasAnyAuthority('COMMANDANT')")
+    public String createResident(@ModelAttribute("resident") Resident resident) {
+        if(residentService.create(resident) != null)
+            return "redirect:/residents/" + resident.getStudentId();
+        else
+            return "error";
+    }
+
     @GetMapping("/{student_id}")
     public String viewResident(@PathVariable String student_id, Authentication authentication, Model model) {
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());

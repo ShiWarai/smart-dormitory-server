@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import ru.mirea.smartdormitory.model.entities.Object;
+import ru.mirea.smartdormitory.model.entities.Resident;
 import ru.mirea.smartdormitory.model.repositories.IObjectRepository;
 import ru.mirea.smartdormitory.model.types.RoleType;
 import ru.mirea.smartdormitory.services.ObjectService;
@@ -38,6 +39,27 @@ public class ObjectController{
         model.addAttribute("role", role.name());
         model.addAttribute("objects", objectService.getAll());
         return "objects";
+    }
+
+    @GetMapping("/create")
+    @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
+    public String viewCreationOfObject(Authentication authentication, Model model) {
+        RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
+
+        Object object = new Object();
+
+        model.addAttribute("role", role.name());
+        model.addAttribute("object", object);
+        return "create_object";
+    }
+
+    @PostMapping("/create")
+    @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
+    public String createObject(@ModelAttribute("object") Object object) {
+        if(objectService.create(object) != null)
+            return "redirect:/objects/" + object.getId();
+        else
+            return "error";
     }
 
     @GetMapping("/{id}")
