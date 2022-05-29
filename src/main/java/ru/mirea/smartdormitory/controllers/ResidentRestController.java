@@ -78,7 +78,9 @@ public class ResidentRestController {
     @DeleteMapping("/{student_id}")
     @PreAuthorize("hasAnyAuthority('COMMANDANT')")
     public ResponseEntity<?> deleteResident(@PathVariable String student_id) {
-        if (residentService.findByStudentId(student_id) != null && residentService.delete(residentService.findByStudentId(student_id).getId()))
+        Resident resident = residentService.findByStudentId(student_id);
+
+        if (resident != null && residentService.delete(resident.getId()))
             return new ResponseEntity<>(HttpStatus.OK);
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

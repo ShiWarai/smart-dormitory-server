@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Blank Page - Smart Dormitory</title>
+    <title>Table - Smart Dormitory</title>
     <meta name="description" content="Для курсовой работы">
     <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css?h=8e1f0e97d0f3f1334b14f3251098a84f">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
@@ -57,7 +57,42 @@
                     </div>
                 </nav>
                 <div class="container-fluid">
-                    <h3 class="text-dark mb-1">Blank Page</h3>
+                    <h3 class="text-dark mb-4">Студенты</h3>
+                    <div class="card shadow">
+                        <div class="card-body"><div id="dataTable" class="table-responsive table mt-2" role="grid" aria-describedby="dataTable_info">
+    <table id="dataTable" class="table my-0">
+        <thead>
+            <tr>
+                <th>Имя</th>
+                <th th:if="${role == 'COMMANDANT' or role == 'GUARD'}">Номер студенческого</th>
+                <th>Роль</th>
+                <th>Команта</th>
+                <th>День рождения</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr th:each="resident: ${residents}">
+            <td th:inline="text">[(${resident.surname + ' ' + resident.name + ' ' + resident.patronymic})]</td>
+            <td th:if="${role} == 'COMMANDANT' or role == 'GUARD'" th:text = "${resident.studentId}"></td>
+            <td th:text = "${resident.role}"></td>
+            <td th:text = "${resident.roomNumber}"></td>
+            <td th:text = "${resident.birthdate}"></td>
+            <td>
+            <a class="btn btn-warning btn-sm" th:href="@{/residents/{id} (id=${resident.studentId})}" role="link">Изменить</a>
+            </td>
+            
+<!--             --<td>
+            <a th:href = "@{/pet/edit/{id} (id=${pet.id})}"
+               class = "btn btn-primary">Обновить</a>
+
+            <a th:href = "@{/pet/del/{id} (id=${pet.id})}"
+               class = "btn btn-danger">Удалить</a>
+            </td> -->
+        </tr>
+        </tbody>
+    </table>
+</div></div>
+                    </div>
                 </div>
             </div>
             <footer class="bg-white sticky-footer">

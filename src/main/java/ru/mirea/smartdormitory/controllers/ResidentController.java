@@ -2,6 +2,7 @@ package ru.mirea.smartdormitory.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -33,20 +34,40 @@ public class ResidentController extends AbstractController<Resident, IResidentRe
         return String.format("redirect:/residents/%s", authentication.getName());
     }
 
+    @GetMapping("/list")
+    public String viewResidents(Authentication authentication, Model model) {
+        RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
+        Resident user = residentService.findByStudentId(authentication.getName());
+
+        String fio = "";
+        if(user.getSurname() != null)
+            fio += user.getSurname() + " ";
+        if (user.getName() != null)
+            fio += user.getName() + " ";
+        if (user.getPatronymic() != null)
+            fio += user.getPatronymic();
+
+        model.addAttribute("fio", fio);
+        model.addAttribute("role", role.name());
+        model.addAttribute("residents", residentService.getAll());
+        return "residents";
+    }
+
     @GetMapping("/{student_id}")
     public String viewResident(@PathVariable String student_id, Authentication authentication, Model model) {
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
+        Resident user = residentService.findByStudentId(authentication.getName());
 
         Resident resident = residentService.findByStudentId(student_id);
         resident.setPinCode(null);
 
         String fio = "";
-        if(resident.getSurname() != null)
-            fio += resident.getSurname() + " ";
-        if (resident.getName() != null)
-            fio += resident.getName() + " ";
-        if (resident.getPatronymic() != null)
-            fio += resident.getPatronymic();
+        if(user.getSurname() != null)
+            fio += user.getSurname() + " ";
+        if (user.getName() != null)
+            fio += user.getName() + " ";
+        if (user.getPatronymic() != null)
+            fio += user.getPatronymic();
 
         model.addAttribute("fio", fio);
         model.addAttribute("role", role.name());
@@ -68,6 +89,8 @@ public class ResidentController extends AbstractController<Resident, IResidentRe
             if(old_resident != null) {
                 if (role != RoleType.COMMANDANT)
                     resident.setRole(old_resident.getRole());
+                if (resident.getPinCode() == null)
+                    resident.setPinCode(residentService.findByStudentId(resident.getStudentId()).getPinCode());
 
                 residentService.update(residentService.findByStudentId(student_id).getId(), resident);
                 return "redirect:/residents/me";
@@ -75,6 +98,17 @@ public class ResidentController extends AbstractController<Resident, IResidentRe
             else
                 return "redirect:/error";
         }
+        else
+            return "error";
+    }
+
+    @GetMapping("/delete/{student_id}")
+    @PreAuthorize("hasAnyAuthority('COMMANDANT')")
+    public String deleteResident(@PathVariable String student_id) {
+        Resident resident = residentService.findByStudentId(student_id);
+
+        if (resident != null && residentService.delete(resident.getId()))
+            return "redirect:/residents/list";
         else
             return "error";
     }
