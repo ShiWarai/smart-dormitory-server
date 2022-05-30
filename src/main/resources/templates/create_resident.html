@@ -158,13 +158,19 @@
   </div>
   <div class="form-group">
     <label> Номер комнаты </label>
-    <input
+    <select
+            class="form-control"
             type="number"
             name="roomNumber"
             th:field="*{roomNumber}"
-            class="form-control"
-    />
-  </div>
+            id="dropOperator">
+      <option th:value="null" text="Без комнаты"></option>
+      <option
+              th:each="room : ${rooms}"
+              th:value="${room.getNumber()}"
+              th:text="${room.getNumber()}"
+      ></option>
+    </select>
   <div class="form-group">
     <label> Роль </label>
     <select

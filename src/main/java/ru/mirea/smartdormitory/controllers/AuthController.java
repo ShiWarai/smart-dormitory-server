@@ -15,12 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Controller
-public class AuthController extends AbstractController<Resident, IResidentRepository>{
+public class AuthController{
     private final ResidentService residentService;
 
-    protected AuthController(ResidentService service) {
-        super(service);
-        this.residentService = service;
+    protected AuthController(ResidentService residentService) {
+        this.residentService = residentService;
     }
 
     @GetMapping("/login-error")

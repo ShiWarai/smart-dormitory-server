@@ -77,7 +77,7 @@
         <tr th:each="object: ${objects}">
             <td th:text = "${object.id}"></td>
             <td th:text = "${object.name}"></td>
-            <td th:text = "${object.typeId}"></td>
+            <td th:text = "${object.type.getName()}"></td>
             <td th:text = "${object.statusId}"></td>
             <td th:text = "${object.roomNumber}"></td>
             <td>

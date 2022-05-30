@@ -95,18 +95,29 @@
                                 <div class="col"><form action="/reservations/create" th:object = "${reservation}" method="POST">
     <div class="form-group">
     <label> Объект </label>
-    <input
+    <select
+            class="form-control"
             type="number"
             name="objectId"
             th:field="*{objectId}"
-            class="form-control"
-            required
-    />
+            id="dropOperator">
+      <option
+              th:each="object : ${objects}"
+              th:value="${object.getId()}"
+              th:text="${object.getName()}"
+      ></option>
+    </select>
   </div>
   <div class="form-group">
     <label> Бронирующий </label>
     <input
             type="number"
+            th:value="*{resident.studentId}"
+            class="form-control"
+            disabled
+    />
+    <input
+            type="hidden"
             name="residentId"
             th:field="*{residentId}"
             class="form-control"

@@ -92,17 +92,17 @@ create table if not exists resident
     id          serial
     constraint resident_pk
     primary key,
-    surname     varchar(50) not null,
-    name        varchar(50) not null,
+    surname     varchar(50)  not null,
+    name        varchar(50)  not null,
     patronymic  varchar(50),
     birthdate   date,
-    student_id  char(7)     not null,
-    pin_code    varchar(256),
+    student_id  char(7)      not null,
+    pin_code    varchar(256) not null,
     room_number integer
     constraint resident_room_number_fk
     references room (number)
     on update cascade on delete set null,
-    role        varchar(16) not null
+    role        varchar(16)  not null
     );
 
 create unique index if not exists resident_id_uindex

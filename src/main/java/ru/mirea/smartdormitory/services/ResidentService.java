@@ -63,10 +63,10 @@ public class ResidentService extends AbstractService<Resident, IResidentReposito
         resident.setSurname("The");
         resident.setName("Admin");
         resident.setStudentId("1234567");
-        resident.setPinCode(bCryptPasswordEncoder.encode("1111"));
+        resident.setPinCode("1111");
         resident.setRole(RoleType.COMMANDANT.name());
         if (residentRepository.findResidentByStudentId(resident.getStudentId())==null) {
-            residentRepository.save(resident);
+            create(resident);
         }
     }
 

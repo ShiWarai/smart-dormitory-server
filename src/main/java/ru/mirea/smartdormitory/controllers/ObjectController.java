@@ -8,19 +8,29 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.mirea.smartdormitory.model.entities.Object;
 import ru.mirea.smartdormitory.model.types.RoleType;
-import ru.mirea.smartdormitory.services.ObjectService;
-import ru.mirea.smartdormitory.services.ResidentService;
+import ru.mirea.smartdormitory.model.types.StatusType;
+import ru.mirea.smartdormitory.services.*;
 
 @Controller
 @RequestMapping(value = "/objects")
 public class ObjectController{
     private ObjectService objectService;
     private ResidentService residentService;
+    private RoomService roomService;
+    private ObjectTypeService objectTypeService;
+    private StatusTypeService statusTypeService;
 
     @Autowired
-    protected ObjectController(ObjectService objectService, ResidentService residentService) {
+    protected ObjectController(ObjectService objectService,
+                               ResidentService residentService,
+                               RoomService roomService,
+                               ObjectTypeService objectTypeService,
+                               StatusTypeService statusTypeService) {
         this.objectService = objectService;
         this.residentService = residentService;
+        this.roomService = roomService;
+        this.objectTypeService = objectTypeService;
+        this.statusTypeService = statusTypeService;
     }
 
     @GetMapping("/list")
@@ -39,6 +49,9 @@ public class ObjectController{
 
         Object object = new Object();
 
+        model.addAttribute("statuses", statusTypeService.getAll());
+        model.addAttribute("types", objectTypeService.getAll());
+        model.addAttribute("rooms", roomService.getAll());
         model.addAttribute("role", role.name());
         model.addAttribute("object", object);
         return "create_object";
@@ -59,6 +72,9 @@ public class ObjectController{
 
         Object object = objectService.findById(id);
 
+        model.addAttribute("statuses", statusTypeService.getAll());
+        model.addAttribute("types", objectTypeService.getAll());
+        model.addAttribute("rooms", roomService.getAll());
         model.addAttribute("role", role.name());
         model.addAttribute("object", object);
         return "object";

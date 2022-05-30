@@ -13,20 +13,21 @@ import ru.mirea.smartdormitory.model.entities.Resident;
 import ru.mirea.smartdormitory.model.repositories.IResidentRepository;
 import ru.mirea.smartdormitory.model.types.RoleType;
 import ru.mirea.smartdormitory.services.ResidentService;
+import ru.mirea.smartdormitory.services.RoomService;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 
 @Controller
 @RequestMapping(value = "/residents")
-public class ResidentController extends AbstractController<Resident, IResidentRepository> {
+public class ResidentController {
     private ResidentService residentService;
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    private RoomService roomService;
 
     @Autowired
-    protected ResidentController(ResidentService service) {
-        super(service);
-        this.residentService = service;
+    protected ResidentController(ResidentService residentService, RoomService roomService) {
+        this.residentService = residentService;
+        this.roomService = roomService;
     }
 
     @GetMapping("/me")
@@ -50,6 +51,7 @@ public class ResidentController extends AbstractController<Resident, IResidentRe
 
         Resident resident = new Resident();
 
+        model.addAttribute("rooms", roomService.getAll());
         model.addAttribute("role", role.name());
         model.addAttribute("resident", resident);
         return "create_resident";
@@ -69,8 +71,8 @@ public class ResidentController extends AbstractController<Resident, IResidentRe
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
 
         Resident resident = residentService.findByStudentId(student_id);
-        resident.setPinCode(null);
 
+        model.addAttribute("rooms", roomService.getAll());
         model.addAttribute("role", role.name());
         model.addAttribute("resident", resident);
         return "resident";
@@ -90,8 +92,8 @@ public class ResidentController extends AbstractController<Resident, IResidentRe
             if(old_resident != null) {
                 if (role != RoleType.COMMANDANT)
                     resident.setRole(old_resident.getRole());
-                if (resident.getPinCode() == null)
-                    resident.setPinCode(residentService.findByStudentId(resident.getStudentId()).getPinCode());
+                if (resident.getPinCode().isBlank())
+                    resident.setPinCode(old_resident.getPinCode());
 
                 residentService.update(residentService.findByStudentId(student_id).getId(), resident);
 

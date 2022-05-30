@@ -28,7 +28,9 @@ public class ReservationController {
     private ObjectService objectService;
 
     @Autowired
-    protected ReservationController(ReservationService reservationService, ResidentService residentService, ObjectService objectService) {
+    protected ReservationController(ReservationService reservationService,
+                                    ResidentService residentService,
+                                    ObjectService objectService) {
         this.reservationService = reservationService;
         this.residentService = residentService;
         this.objectService = objectService;
@@ -62,6 +64,7 @@ public class ReservationController {
         reservation.setStartReservation(time);
         reservation.setEndReservation(time);
 
+        model.addAttribute("objects", objectService.getAll());
         model.addAttribute("role", role.name());
         model.addAttribute("reservation", reservation);
         return "create_reservation";

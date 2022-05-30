@@ -96,21 +96,19 @@
   <div class="form-group">
     <label> Объект </label>
     <input
-            type="number"
-            name="objectId"
-            th:field="*{objectId}"
+            type="text"
+            th:value="*{object.getName()}"
             class="form-control"
-            readonly
+            disabled
     />
   </div>
   <div class="form-group">
     <label> Бронирующий </label>
     <input
-            type="number"
-            name="residentId"
-            th:field="*{residentId}"
+            type="text"
+            th:value="*{resident.getStudentId()}"
             class="form-control"
-            readonly
+            disabled
     />
   </div>
   <div class="form-group">
