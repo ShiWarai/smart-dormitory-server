@@ -27,14 +27,6 @@ public class ReservationService extends AbstractService<Reservation, IReservatio
         return create(entity);
     }
 
-    public Reservation findByUserId(Long userId) {
-        return reservationRepository.findReservationById(userId);
-    }
-
-    public void deleteById(Long id) {
-        reservationRepository.deleteById(id);
-    }
-
 //    public List<Reservation> findByObjectIdAndIsExpired(Long objectId, boolean isExpired)
 //    {
 //        return reservationRepository.findAllByObjectIdAndIsExpired(objectId, isExpired);
@@ -44,6 +36,10 @@ public class ReservationService extends AbstractService<Reservation, IReservatio
 //    {
 //        return reservationRepository.findAllByIsExpired(isExpired);
 //    }
+
+    public List<Reservation> findAllByResidentId(Long id){
+        return reservationRepository.findAllByResidentId(id);
+    }
 
     public List<Reservation> findByObjectId(Long objectId)
     {

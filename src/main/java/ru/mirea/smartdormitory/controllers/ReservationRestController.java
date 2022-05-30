@@ -13,6 +13,7 @@ import ru.mirea.smartdormitory.services.ObjectService;
 import ru.mirea.smartdormitory.services.ReservationService;
 import ru.mirea.smartdormitory.services.ResidentService;
 
+import javax.management.relation.Role;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -34,8 +35,9 @@ public class ReservationRestController {
     }
 
     @PostMapping(value = "/", consumes = {"application/json"})
-    public ResponseEntity<?> createReservation(@RequestBody Reservation reservation) {
+    public ResponseEntity<?> createReservation(Authentication authentication, @RequestBody Reservation reservation) {
         Timestamp time = new Timestamp(System.currentTimeMillis());
+        RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
         Object object = objectService.findById(reservation.getObjectId());
         ObjectType objectType = object.getType();
 
@@ -45,6 +47,9 @@ public class ReservationRestController {
             if((count + 1) > object.getType().getReservationLimit())
                 return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
         }
+
+        if(role != RoleType.COMMANDANT)
+            reservation.setResidentId(residentService.findByStudentId(authentication.getName()).getId());
 
         if(reservation.getEndReservation().after(time))
             return new ResponseEntity<Long>(reservationService.create(reservation).getId(), HttpStatus.OK);
@@ -79,7 +84,7 @@ public class ReservationRestController {
             else
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        else if(residentService.findById(reservation.getResidentId()).getStudentId() == authentication.getName())
+        else if(residentService.findById(reservation.getResidentId()).getStudentId().equals(authentication.getName()))
             if (reservationService.findById(id) != null && reservationService.delete(id))
                 return new ResponseEntity<>(HttpStatus.OK);
             else
