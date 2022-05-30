@@ -76,8 +76,8 @@
         <tbody>
         <tr th:each="reserv: ${reservations}">
             <td th:text = "${reserv.id}"></td>
-            <td th:text = "${reserv.object.name}"></td>
-            <td th:text = "${reserv.resident.studentId}"></td>
+            <td><a th:href = "${'/objects/' + reserv.objectId}" th:text = "${reserv.object.name}"></a></td>
+            <td><a th:href = "${'/residents/' + reserv.resident.studentId}" th:text = "${reserv.resident.studentId}"></a></td>
             <td th:text = "${reserv.startReservation}"></td>
             <td th:text = "${reserv.endReservation}"></td>
             <td>

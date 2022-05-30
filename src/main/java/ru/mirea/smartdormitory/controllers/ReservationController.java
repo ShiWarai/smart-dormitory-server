@@ -57,10 +57,12 @@ public class ReservationController {
     @GetMapping("/create")
     public String viewCreationOfReservation(Authentication authentication, Model model) {
         Timestamp time = new Timestamp(System.currentTimeMillis());
+        Resident resident = residentService.findByStudentId(authentication.getName());
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
 
         Reservation reservation = new Reservation();
-        reservation.setResidentId(residentService.findByStudentId(authentication.getName()).getId());
+        reservation.setResidentId(resident.getId());
+        reservation.setResident(resident);
         reservation.setStartReservation(time);
         reservation.setEndReservation(time);
 

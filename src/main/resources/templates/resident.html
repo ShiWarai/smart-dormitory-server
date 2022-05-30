@@ -203,7 +203,7 @@
     <input type="hidden" name="role" th:value="*{role}" th:if="${role} != 'COMMANDANT'">
   </div>
   <div class="box-footer" style="margin-top:16px">
-    <button type="submit" class="btn btn-primary btn-lg">
+    <button type="submit" class="btn btn-primary btn-lg" th:if="${role} == 'COMMANDANT'">
       Подтвердить
     </button>
     <a class="btn btn-danger btn-lg" th:href="@{/residents/delete/{id} (id=${resident.studentId})}" role="button" th:if="${role} == 'COMMANDANT'">Удалить</a>
