@@ -2,7 +2,6 @@ package ru.mirea.smartdormitory.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,8 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.mirea.smartdormitory.model.entities.Resident;
 import ru.mirea.smartdormitory.model.repositories.IResidentRepository;
 import ru.mirea.smartdormitory.model.types.RoleType;
-
-import java.sql.Date;
 
 @Service
 @Transactional
@@ -34,7 +31,25 @@ public class ResidentService extends AbstractService<Resident, IResidentReposito
         return residentRepository.save(entity);
     }
 
-    public RoleType getByStudentId(String student_id) {
+    @Override
+    public Resident update(Long id, Resident entity) {
+        if(findById(id) != null) {
+            entity.setPinCode(bCryptPasswordEncoder.encode(entity.getPinCode()));
+            residentRepository.updatePropertiesByStudentId(entity.getStudentId(),
+                                                            entity.getSurname(),
+                                                            entity.getName(),
+                                                            entity.getPatronymic(),
+                                                            entity.getBirthdate(),
+                                                            entity.getPinCode(),
+                                                            entity.getRoomNumber(),
+                                                            entity.getRole());
+            return findById(id);
+        }
+        else
+            return null;
+    }
+
+    public RoleType getRoleTypeByStudentId(String student_id) {
         return RoleType.valueOf(findByStudentId(student_id).getRole());
     }
 
@@ -48,10 +63,10 @@ public class ResidentService extends AbstractService<Resident, IResidentReposito
         resident.setSurname("The");
         resident.setName("Admin");
         resident.setStudentId("1234567");
-        resident.setPinCode(bCryptPasswordEncoder.encode("1111"));
+        resident.setPinCode("1111");
         resident.setRole(RoleType.COMMANDANT.name());
         if (residentRepository.findResidentByStudentId(resident.getStudentId())==null) {
-            residentRepository.save(resident);
+            create(resident);
         }
     }
 

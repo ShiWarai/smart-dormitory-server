@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Page Not Found - Smart Dormitory</title>
+    <title>List of objects</title>
     <meta name="description" content="Для курсовой работы">
     <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
@@ -59,12 +59,35 @@
                     </div>
                 </nav>
                 <div class="container-fluid">
-                    <div class="text-center mt-5">
-                        <div class="error mx-auto" data-text="404">
-                            <p class="m-0">404</p>
-                        </div>
-                        <p class="text-dark mb-5 lead">Page Not Found</p>
-                        <p class="text-black-50 mb-0">It looks like you found a glitch in the matrix...</p>
+                    <div class="d-flex justify-content-between align-items-baseline">
+                        <h3 class="text-dark mb-4">Объекты</h3><a class="btn btn-primary" role="button" style="margin-right: 20px;" href="/objects/create" th:if="${role == 'COMMANDANT' or role == 'STUFF'}">Создать</a>
+                    </div>
+                    <div class="card shadow">
+                        <div class="card-body"><div id="dataTable" class="table-responsive table mt-2" role="grid" aria-describedby="dataTable_info">
+    <table id="dataTable" class="table my-0">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Тип</th>
+                <th>Статус</th>
+                <th>Комната</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr th:each="object: ${objects}">
+            <td th:text = "${object.id}"></td>
+            <td th:text = "${object.name}"></td>
+            <td><a th:href = "${'/object_types/' + object.typeId}" th:text = "${object.type.getName()}"></a></td>
+            <td th:text = "${object.statusId}"></td>
+            <td th:text = "${object.roomNumber}"></td>
+            <td>
+            <a class="btn btn-warning btn-sm" th:href="@{/objects/{id} (id=${object.id})}" role="link">Изменить</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div></div>
                     </div>
                 </div>
             </div>

@@ -5,9 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.quartz.CronExpression;
 import ru.mirea.smartdormitory.model.types.ObjectType;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.util.Date;
 
 @Entity
 @Table(name = "reservation")
@@ -45,4 +49,25 @@ public class Reservation {
 
     @Column(name = "end_reservation", nullable = false)
     private java.sql.Timestamp endReservation;
+
+    public boolean isActive() {
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        String cronStr = this.getObject().getType().getSchedule();
+
+        if(this.getStartReservation().after(time) && this.getEndReservation().before(time))
+            return false;
+
+        if(cronStr == null)
+            return true;
+
+        try {
+            CronExpression expression = new CronExpression(cronStr);
+            if (expression.isSatisfiedBy(new Date()))
+                return true;
+        } catch (ParseException exp) {
+            System.out.printf("WRONG CRON: %s\n", cronStr);
+        }
+
+        return false;
+    }
 }

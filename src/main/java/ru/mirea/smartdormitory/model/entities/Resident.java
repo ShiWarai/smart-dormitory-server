@@ -40,7 +40,7 @@ public class Resident implements UserDetails {
     @Column(name = "patronymic", length = 50)
     private String patronymic;
 
-    @Column(name = "birthdate")
+    @Column(name = "birthdate", nullable = true)
     private java.sql.Date birthdate;
 
     @Column(name = "student_id", unique = true, nullable = false)

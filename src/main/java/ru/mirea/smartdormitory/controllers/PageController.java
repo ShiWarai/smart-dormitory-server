@@ -11,14 +11,13 @@ import ru.mirea.smartdormitory.services.ResidentService;
 
 @Controller
 @RequestMapping(value = "/page")
-public class PageController extends AbstractController<Resident, IResidentRepository> {
+public class PageController {
     private ResidentService residentService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
-    protected PageController(ResidentService service) {
-        super(service);
-        this.residentService = service;
+    protected PageController(ResidentService residentService) {
+        this.residentService = residentService;
     }
 
     @GetMapping("/home")

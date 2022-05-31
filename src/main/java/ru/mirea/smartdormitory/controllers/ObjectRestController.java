@@ -90,48 +90,12 @@ public class ObjectRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    private List<Long> getActiveByObject(Long objectId) {
-        List<Long> currentReservationIds = new ArrayList<Long>();
-
-        List<Reservation> activeReservations = reservationService.findActiveByObjectId(objectId);
-
-        for (Reservation reservation : activeReservations) {
-            String cronStr = reservation.getObject().getType().getSchedule();
-
-            if(cronStr != null) {
-                try {
-                    CronExpression expression = new CronExpression(cronStr);
-                    if (expression.isSatisfiedBy(new Date()))
-                        currentReservationIds.add(reservation.getId());
-                } catch (ParseException exp) {
-                    System.out.printf("WRONG CRON: %s\n", cronStr);
-                }
-            }
-            else
-                currentReservationIds.add(reservation.getId());
-        }
-
-        return currentReservationIds;
-    }
-
-    private List<Long> getByObject(Long objectId) {
-        List<Long> currentReservationIds = new ArrayList<Long>();
-
-        List<Reservation> reservations = reservationService.findByObjectId(objectId);
-
-        for (Reservation reservation : reservations) {
-            currentReservationIds.add(reservation.getId());
-        }
-
-        return currentReservationIds;
-    }
-
     @GetMapping(value= "/active_reservations/{id}")
     public ResponseEntity<?> getActiveReservations(@PathVariable Long id) {
         if(objectService.findById(id) == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        List<Long> activeReservations = getActiveByObject(id);
+        List<Long> activeReservations = reservationService.getAllActiveIdByObject(id);
         return new ResponseEntity<List<Long>>(activeReservations, HttpStatus.OK);
     }
 
@@ -140,7 +104,7 @@ public class ObjectRestController {
         if(objectService.findById(id) == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        List<Long> reservations = getByObject(id);
+        List<Long> reservations = reservationService.getAllIdByObject(id);
         return new ResponseEntity<List<Long>>(reservations, HttpStatus.OK);
     }
 

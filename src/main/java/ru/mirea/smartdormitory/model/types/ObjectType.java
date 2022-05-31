@@ -9,6 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "object_type")
+@Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,8 +27,4 @@ public class ObjectType {
 
     @Column(name = "schedule")
     private String schedule;
-
-    public void setSchedule(String schedule) {
-        this.schedule = schedule;
-    }
 }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Page Not Found - Smart Dormitory</title>
+    <title>Reservation</title>
     <meta name="description" content="Для курсовой работы">
     <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
@@ -59,12 +59,99 @@
                     </div>
                 </nav>
                 <div class="container-fluid">
-                    <div class="text-center mt-5">
-                        <div class="error mx-auto" data-text="404">
-                            <p class="m-0">404</p>
+                    <div class="d-flex justify-content-between align-items-baseline">
+                        <h3 class="text-dark mb-4" th:text="${'Бронирование №' + reservation.id}">Бронирование №</h3>
+                        <div class="d-flex align-items-center align-items-sm-center align-items-md-center align-items-lg-center align-items-xl-center align-items-xxl-center" id="active-status" th:if="${isActive}"><span style="color: var(--bs-body-bg);font-weight: bold;">Active status</span><i class="fas fa-play" style="margin-left: 12px;color: var(--bs-body-bg);"></i></div>
+                        <div class="d-flex align-items-center align-items-sm-center align-items-md-center align-items-lg-center align-items-xl-center align-items-xxl-center" id="inactive-status" th:if="${!isActive}"><span style="color: var(--bs-body-bg);font-weight: bold;">Inactive status</span><i class="fas fa-play" style="margin-left: 12px;color: var(--bs-body-bg);"></i></div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-lg-12">
+                            <div class="row mb-3 d-none">
+                                <div class="col">
+                                    <div class="card textwhite bg-primary text-white shadow">
+                                        <div class="card-body">
+                                            <div class="row mb-2">
+                                                <div class="col">
+                                                    <p class="m-0">Peformance</p>
+                                                    <p class="m-0"><strong>65.2%</strong></p>
+                                                </div>
+                                                <div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
+                                            </div>
+                                            <p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i>&nbsp;5% since last month</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card textwhite bg-success text-white shadow">
+                                        <div class="card-body">
+                                            <div class="row mb-2">
+                                                <div class="col">
+                                                    <p class="m-0">Peformance</p>
+                                                    <p class="m-0"><strong>65.2%</strong></p>
+                                                </div>
+                                                <div class="col-auto"><i class="fas fa-rocket fa-2x"></i></div>
+                                            </div>
+                                            <p class="text-white-50 small m-0"><i class="fas fa-arrow-up"></i>&nbsp;5% since last month</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col"><form th:object = "${reservation}">
+  <div class="form-group">
+    <label> Объект </label>
+    <input
+            type="text"
+            th:value="*{object.getName()}"
+            class="form-control"
+            disabled
+    />
+  </div>
+  <div class="form-group">
+    <label> Бронирующий </label>
+    <input
+            type="text"
+            th:value="*{resident.getStudentId()}"
+            class="form-control"
+            disabled
+    />
+  </div>
+  <div class="form-group">
+    <label> Причина </label>
+    <input
+            type="text"
+            name="reason"
+            th:field="*{reason}"
+            class="form-control"
+            readonly
+    />
+  </div>
+  <div class="form-group">
+    <label> Начало </label>
+    <input
+            type="text"
+            name="startReservation"
+            th:field="*{startReservation}"
+            class="form-control"
+            readonly
+    />
+  </div>
+      <div class="form-group">
+    <label> Конец </label>
+    <input
+            type="text"
+            name="endReservation"
+            th:field="*{endReservation}"
+            class="form-control"
+            readonly
+    />
+  </div>
+  <div class="box-footer" style="margin-top:16px">
+    <a class="btn btn-danger btn-lg" th:href="@{/reservations/delete/{id} (id=${reservation.id})}" role="button" th:if="${canDelete}">Удалить</a>
+  </div>
+</form></div>
+                            </div>
                         </div>
-                        <p class="text-dark mb-5 lead">Page Not Found</p>
-                        <p class="text-black-50 mb-0">It looks like you found a glitch in the matrix...</p>
                     </div>
                 </div>
             </div>

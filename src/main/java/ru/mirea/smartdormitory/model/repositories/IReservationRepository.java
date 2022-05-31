@@ -12,6 +12,7 @@ public interface IReservationRepository extends JpaRepository<Reservation, Long>
 //    List<Reservation> findAllByObjectIdAndIsExpired(Long id, boolean isExpired);
 //    List<Reservation> findAllByIsExpired(boolean isExpired);
     List<Reservation> findAllByObjectId(Long id);
+    List<Reservation> findAllByResidentId(Long id);
     List<Reservation> findAllByStartReservationIsBeforeAndEndReservationIsAfterAndObjectId(java.sql.Timestamp date1, java.sql.Timestamp date2, Long objectId);
     void deleteAllByObjectId(Long objectId);
 }

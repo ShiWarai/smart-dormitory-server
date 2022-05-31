@@ -1,0 +1,22 @@
+@media (min-width: 768px) {
+  .sidebar {
+    width: 17rem !important;
+  }
+}
+
+#active-status {
+  border-style: solid;
+  border-color: var(--bs-green);
+  background: var(--bs-success);
+  padding: 8px;
+  border-radius: 12px;
+}
+
+#inactive-status {
+  background: var(--bs-danger);
+  padding: 8px;
+  border-radius: 12px;
+  border-style: solid;
+  border-color: var(--bs-red);
+}
+

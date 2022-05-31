@@ -42,7 +42,7 @@ public class ResidentRestController {
 
     @GetMapping(value="/all")
     public ResponseEntity<List<Resident>> getResidents(Authentication authentication) {
-        RoleType role = residentService.getByStudentId(authentication.getName());
+        RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
         if(role == RoleType.COMMANDANT || role == RoleType.GUARD)
         {
             final List<Resident> residents = residentService.getAll();
@@ -56,14 +56,17 @@ public class ResidentRestController {
 
     @PutMapping("/{student_id}")
     public ResponseEntity<Resident> updateResident(Authentication authentication, @PathVariable String student_id, @RequestBody Resident resident) {
-        RoleType role = residentService.getByStudentId(authentication.getName());
+        RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
 
         if(role == RoleType.COMMANDANT || authentication.getName().equals(resident.getStudentId())) {
             Resident old_resident = residentService.findByStudentId(student_id);
+
             if(old_resident != null) {
-                resident.setId(old_resident.getId());
-                resident.setStudentId(old_resident.getStudentId());
-                return new ResponseEntity<Resident>(residentService.update(resident.getId(), resident), HttpStatus.OK);
+
+                if(role != RoleType.COMMANDANT)
+                    resident.setRole(old_resident.getRole());
+
+                return new ResponseEntity<Resident>(residentService.update(old_resident.getId(), resident), HttpStatus.OK);
             }
             else
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -73,16 +76,13 @@ public class ResidentRestController {
     }
 
     @DeleteMapping("/{student_id}")
-    public ResponseEntity<?> deleteResident(Authentication authentication, @PathVariable String student_id) {
-        RoleType role = residentService.getByStudentId(authentication.getName());
+    @PreAuthorize("hasAnyAuthority('COMMANDANT')")
+    public ResponseEntity<?> deleteResident(@PathVariable String student_id) {
+        Resident resident = residentService.findByStudentId(student_id);
 
-        if((role == RoleType.COMMANDANT) || (authentication.getName().equals(student_id))) {
-            if (residentService.findByStudentId(student_id) != null && residentService.delete(residentService.findByStudentId(student_id).getId()))
-                return new ResponseEntity<>(HttpStatus.OK);
-            else
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        if (resident != null && residentService.delete(resident.getId()))
+            return new ResponseEntity<>(HttpStatus.OK);
         else
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

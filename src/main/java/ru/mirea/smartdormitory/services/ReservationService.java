@@ -1,5 +1,6 @@
 package ru.mirea.smartdormitory.services;
 
+import org.quartz.CronExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -7,6 +8,9 @@ import ru.mirea.smartdormitory.model.entities.Reservation;
 import ru.mirea.smartdormitory.model.repositories.IReservationRepository;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -27,35 +31,41 @@ public class ReservationService extends AbstractService<Reservation, IReservatio
         return create(entity);
     }
 
-    public Reservation findByUserId(Long userId) {
-        return reservationRepository.findReservationById(userId);
+    public List<Reservation> findAllByResidentId(Long id){
+        return reservationRepository.findAllByResidentId(id);
     }
-
-    public void deleteById(Long id) {
-        reservationRepository.deleteById(id);
-    }
-
-//    public List<Reservation> findByObjectIdAndIsExpired(Long objectId, boolean isExpired)
-//    {
-//        return reservationRepository.findAllByObjectIdAndIsExpired(objectId, isExpired);
-//    }
-//
-//    public List<Reservation> findByExpiration(boolean isExpired)
-//    {
-//        return reservationRepository.findAllByIsExpired(isExpired);
-//    }
 
     public List<Reservation> findByObjectId(Long objectId)
     {
         return reservationRepository.findAllByObjectId(objectId);
     }
 
-    public List<Reservation> findActiveByObjectId(Long objectId){
-        Timestamp time = new Timestamp(System.currentTimeMillis());
-        return reservationRepository.findAllByStartReservationIsBeforeAndEndReservationIsAfterAndObjectId(time, time, objectId);
-    }
-
     public void deleteAllByObjectId(Long objectId) {
         reservationRepository.deleteAllByObjectId(objectId);
+    }
+
+    public List<Long> getAllActiveIdByObject(Long objectId) {
+        List<Long> currentReservationIds = new ArrayList<Long>();
+
+        List<Reservation> activeReservations = this.findByObjectId(objectId);
+
+        for (Reservation reservation : activeReservations) {
+            if(reservation.isActive())
+                currentReservationIds.add(reservation.getId());
+        }
+
+        return currentReservationIds;
+    }
+
+    public List<Long> getAllIdByObject(Long objectId) {
+        List<Long> currentReservationIds = new ArrayList<Long>();
+
+        List<Reservation> reservations = this.findByObjectId(objectId);
+
+        for (Reservation reservation : reservations) {
+            currentReservationIds.add(reservation.getId());
+        }
+
+        return currentReservationIds;
     }
 }

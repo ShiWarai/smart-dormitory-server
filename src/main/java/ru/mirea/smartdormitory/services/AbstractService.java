@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public  abstract class AbstractService<T, D extends JpaRepository<T, Long>> {
-    private final D repository;
+    protected final D repository;
 
     protected AbstractService(D repository) {
         this.repository = repository;
@@ -27,7 +27,7 @@ public  abstract class AbstractService<T, D extends JpaRepository<T, Long>> {
 
     public T update(Long id, T entity) {
         if(findById(id) != null)
-            return create(entity);
+            return repository.save(entity);
         else
             return null;
     }
@@ -39,7 +39,7 @@ public  abstract class AbstractService<T, D extends JpaRepository<T, Long>> {
     }
 
     public List<T> getAll() {
-        Sort sort = Sort.by("id").ascending();//не очень красиво и правильно, но
+        Sort sort = Sort.by("id").ascending();
         return repository.findAll(sort);
     }
 }

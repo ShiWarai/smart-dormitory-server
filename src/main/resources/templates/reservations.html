@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Page Not Found - Smart Dormitory</title>
+    <title>List of reservations</title>
     <meta name="description" content="Для курсовой работы">
     <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
@@ -59,12 +59,36 @@
                     </div>
                 </nav>
                 <div class="container-fluid">
-                    <div class="text-center mt-5">
-                        <div class="error mx-auto" data-text="404">
-                            <p class="m-0">404</p>
-                        </div>
-                        <p class="text-dark mb-5 lead">Page Not Found</p>
-                        <p class="text-black-50 mb-0">It looks like you found a glitch in the matrix...</p>
+                    <div class="d-flex justify-content-between align-items-baseline">
+                        <h3 class="text-dark mb-4">Бронирования</h3><a class="btn btn-primary" role="button" style="margin-right: 20px;" href="/reservations/create">Создать</a>
+                    </div>
+                    <div class="card shadow">
+                        <div class="card-body"><div id="dataTable" class="table-responsive table mt-2" role="grid" aria-describedby="dataTable_info">
+    <table id="dataTable" class="table my-0">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Объект</th>
+                <th>Бронирующий</th>
+                <th>Начало</th>
+                <th>Конец</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr th:each="reserv: ${reservations}">
+            <td th:text = "${reserv.id}"></td>
+            <td th:if = "${role} == 'COMMANDANT' or ${role} == 'STUFF'"><a th:href = "${'/objects/' + reserv.objectId}" th:text = "${reserv.object.name}"></a></td>
+            <td th:if = "${role} != 'COMMANDANT' and ${role} != 'STUFF'" th:text = "${reserv.object.name}"></td>
+            <td><a th:href = "${'/residents/' + reserv.resident.studentId}" th:text = "${reserv.resident.studentId}"></a></td>
+            <td th:text = "${reserv.startReservation}"></td>
+            <td th:text = "${reserv.endReservation}"></td>
+            <td>
+            <a class="btn btn-warning btn-sm" th:href="@{/reservations/{id} (id=${reserv.id})}" role="link">Посмотреть</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div></div>
                     </div>
                 </div>
             </div>

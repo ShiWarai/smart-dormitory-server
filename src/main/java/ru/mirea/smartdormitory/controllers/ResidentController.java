@@ -1,45 +1,130 @@
 package ru.mirea.smartdormitory.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 import ru.mirea.smartdormitory.model.entities.Resident;
 import ru.mirea.smartdormitory.model.repositories.IResidentRepository;
 import ru.mirea.smartdormitory.model.types.RoleType;
 import ru.mirea.smartdormitory.services.ResidentService;
+import ru.mirea.smartdormitory.services.RoomService;
+
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 
 @Controller
 @RequestMapping(value = "/residents")
-public class ResidentController extends AbstractController<Resident, IResidentRepository> {
+public class ResidentController {
     private ResidentService residentService;
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    private RoomService roomService;
 
     @Autowired
-    protected ResidentController(ResidentService service) {
-        super(service);
-        this.residentService = service;
+    protected ResidentController(ResidentService residentService, RoomService roomService) {
+        this.residentService = residentService;
+        this.roomService = roomService;
     }
 
     @GetMapping("/me")
     public String getMy(Authentication authentication) {
-        return String.format("redirect:/residents/view_page/%s", authentication.getName());
+        return String.format("redirect:/residents/%s", authentication.getName());
     }
 
-    @GetMapping("/view_page/{student_id}")
-    public String editResidentPage(@PathVariable String student_id, Authentication authentication, Model model) {
-        RoleType role = residentService.getByStudentId(authentication.getName());
-        if(role.ordinal() >= RoleType.GUARD.ordinal() || authentication.getName().equals(student_id))
+    @GetMapping("/list")
+    public String viewResidents(Authentication authentication, Model model) {
+        RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
+
+        model.addAttribute("role", role.name());
+        model.addAttribute("residents", residentService.getAll());
+        return "residents";
+    }
+
+    @GetMapping("/create")
+    @PreAuthorize("hasAnyAuthority('COMMANDANT')")
+    public String viewCreationOfResident(Authentication authentication, Model model) {
+        RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
+
+        Resident resident = new Resident();
+
+        model.addAttribute("rooms", roomService.getAll());
+        model.addAttribute("role", role.name());
+        model.addAttribute("resident", resident);
+        return "create_resident";
+    }
+
+    @PostMapping("/create")
+    @PreAuthorize("hasAnyAuthority('COMMANDANT')")
+    public String createResident(@ModelAttribute("resident") Resident resident) {
+        if(residentService.create(resident) != null)
+            return "redirect:/residents/" + resident.getStudentId();
+        else
+            return "error";
+    }
+
+    @GetMapping("/{student_id}")
+    public String viewResident(@PathVariable String student_id, Authentication authentication, Model model) {
+        RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
+
+        Resident resident = residentService.findByStudentId(student_id);
+
+        model.addAttribute("rooms", roomService.getAll());
+        model.addAttribute("role", role.name());
+        model.addAttribute("resident", resident);
+        return "resident";
+    }
+
+    @PostMapping("/{student_id}")
+    public String editResident(@PathVariable String student_id,
+                               Authentication authentication,
+                               @ModelAttribute("resident") Resident resident)
+    {
+        RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
+
+        if(role == RoleType.COMMANDANT || authentication.getName().equals(student_id))
         {
-            model.addAttribute("userRole", role.name());
-            model.addAttribute("resident", residentService.findByStudentId(student_id));
-            return "view";
+            Resident old_resident = residentService.findByStudentId(resident.getStudentId());
+
+            if(old_resident != null) {
+                if (role != RoleType.COMMANDANT)
+                    resident.setRole(old_resident.getRole());
+                if (resident.getPinCode().isBlank())
+                    resident.setPinCode(old_resident.getPinCode());
+
+                residentService.update(residentService.findByStudentId(student_id).getId(), resident);
+
+                if(resident.getStudentId().equals(authentication.getName()))
+                    return "redirect:/residents/me";
+                else
+                    return "redirect:/residents/list";
+            }
+            else
+                return "redirect:/error";
         }
         else
             return "error";
+    }
+
+    @GetMapping("/delete/{student_id}")
+    @PreAuthorize("hasAnyAuthority('COMMANDANT')")
+    public String deleteResident(@PathVariable String student_id) {
+        Resident resident = residentService.findByStudentId(student_id);
+
+        if (resident != null && residentService.delete(resident.getId()))
+            return "redirect:/residents/list";
+        else
+            return "error";
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setLenient(false);
+
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
 }

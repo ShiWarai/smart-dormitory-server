@@ -1,25 +1,51 @@
-<html lang="en" class="no-touch">
+<!DOCTYPE html>
+<html>
+
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>Sign in</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Login - Smart Dormitory</title>
+    <meta name="description" content="Для курсовой работы">
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
 </head>
-<body>
-<div>
-    <form method="post" action="/login">
-        <h2>Пройдите авторизацию</h2>
-        <p>
-            <label for="username" >Номер студенческого</label>
-            <input type="text" id="username" name="username" placeholder="Username" required="" autofocus="">
-        </p>
-        <p>
-            <label for="password" >PIN-код</label>
-            <input type="password" id="password" name="password"  placeholder="Password" required="">
-        </p>
-        <button type="submit">Авторизоваться</button>
-    </form>
-</div>
+
+<body class="bg-gradient-primary">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-9 col-lg-12 col-xl-10">
+                <div class="card shadow-lg o-hidden border-0 my-5">
+                    <div class="card-body p-0">
+                        <div class="row">
+                            <div class="col-lg-6 d-none d-lg-flex">
+                                <div class="flex-grow-1 bg-login-image"><img src="../assets/img/dormitory.jpg" width="100%" height="100%"></div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="p-5">
+                                    <div class="text-center">
+                                        <h4 class="text-dark mb-4">Smart Dormitory - Консоль</h4>
+                                    </div>
+                                    <form action="/login" method="post">
+                                        <div class="mb-3"><input class="form-control form-control-user" type="text" placeholder="Введите номер студенческого" name="username" minlength="7" maxlength="7"></div>
+                                        <div class="mb-3"><input class="form-control form-control-user" type="password" placeholder="Пин-код" name="password" maxlength="4" minlength="4" required=""></div>
+                                        <div class="mb-3">
+                                            <div class="custom-control custom-checkbox small">
+                                                <div class="form-check"><input class="form-check-input custom-control-input" type="checkbox" id="formCheck-1"><label class="form-check-label custom-control-label" for="formCheck-1">Запомнить</label></div>
+                                            </div>
+                                        </div><button class="btn btn-primary d-block btn-user w-100" type="submit">Войти</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/theme.js"></script>
 </body>
+
 </html>
