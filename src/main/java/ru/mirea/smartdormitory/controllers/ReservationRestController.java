@@ -43,7 +43,7 @@ public class ReservationRestController {
 
         if(objectType.getReservationLimit() != null) {
             // Считаем кол-во
-            int count = reservationService.findActiveByObjectId(object.getId()).size();
+            int count = reservationService.getAllIdByObject(object.getId()).size();
             if((count + 1) > object.getType().getReservationLimit())
                 return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
         }
@@ -62,6 +62,14 @@ public class ReservationRestController {
         Reservation reservation = reservationService.findById(id);
         return reservation != null
                 ? new ResponseEntity<>(reservation, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping(value="/is_active/{id}")
+    public ResponseEntity<?> isActive(@PathVariable Long id) {
+        Reservation reservation = reservationService.findById(id);
+        return reservation != null
+                ? new ResponseEntity<>(reservation.isActive(), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 

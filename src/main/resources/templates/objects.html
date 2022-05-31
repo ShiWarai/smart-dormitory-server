@@ -23,6 +23,7 @@
                 <ul class="navbar-nav text-light" id="accordionSidebar">
                     <li class="nav-item"><a class="nav-link" href="/residents/me" th-=""><i class="fas fa-user"></i><span>Профиль</span></a></li>
                     <li class="nav-item" th:if="${role} == 'COMMANDANT' or ${role} == 'STUFF'"><a class="nav-link" href="/objects/list"><i class="fas fa-table"></i><span>Объекты</span></a></li>
+                    <li class="nav-item" th:if="${role} == 'COMMANDANT' or ${role} == 'STUFF'"><a class="nav-link" href="/object_types/list"><i class="far fa-clone"></i><span>Типы объектов</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="/residents/list"><i class="fas fa-theater-masks"></i><span>Жители</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="/reservations/list"><i class="far fa-calendar-plus"></i><span>Бронирования</span></a></li>
                 </ul>
@@ -77,20 +78,12 @@
         <tr th:each="object: ${objects}">
             <td th:text = "${object.id}"></td>
             <td th:text = "${object.name}"></td>
-            <td th:text = "${object.type.getName()}"></td>
+            <td><a th:href = "${'/object_types/' + object.typeId}" th:text = "${object.type.getName()}"></a></td>
             <td th:text = "${object.statusId}"></td>
             <td th:text = "${object.roomNumber}"></td>
             <td>
             <a class="btn btn-warning btn-sm" th:href="@{/objects/{id} (id=${object.id})}" role="link">Изменить</a>
             </td>
-            
-<!--             --<td>
-            <a th:href = "@{/pet/edit/{id} (id=${pet.id})}"
-               class = "btn btn-primary">Обновить</a>
-
-            <a th:href = "@{/pet/del/{id} (id=${pet.id})}"
-               class = "btn btn-danger">Удалить</a>
-            </td> -->
         </tr>
         </tbody>
     </table>

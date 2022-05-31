@@ -23,6 +23,7 @@
                 <ul class="navbar-nav text-light" id="accordionSidebar">
                     <li class="nav-item"><a class="nav-link" href="/residents/me" th-=""><i class="fas fa-user"></i><span>Профиль</span></a></li>
                     <li class="nav-item" th:if="${role} == 'COMMANDANT' or ${role} == 'STUFF'"><a class="nav-link" href="/objects/list"><i class="fas fa-table"></i><span>Объекты</span></a></li>
+                    <li class="nav-item" th:if="${role} == 'COMMANDANT' or ${role} == 'STUFF'"><a class="nav-link" href="/object_types/list"><i class="far fa-clone"></i><span>Типы объектов</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="/residents/list"><i class="fas fa-theater-masks"></i><span>Жители</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="/reservations/list"><i class="far fa-calendar-plus"></i><span>Бронирования</span></a></li>
                 </ul>
@@ -58,7 +59,11 @@
                     </div>
                 </nav>
                 <div class="container-fluid">
-                    <h3 class="text-dark mb-4" th:text="${'Бронирование №' + reservation.id}">Бронирование №</h3>
+                    <div class="d-flex justify-content-between align-items-baseline">
+                        <h3 class="text-dark mb-4" th:text="${'Бронирование №' + reservation.id}">Бронирование №</h3>
+                        <div class="d-flex align-items-center align-items-sm-center align-items-md-center align-items-lg-center align-items-xl-center align-items-xxl-center" id="active-status" th:if="${isActive}"><span style="color: var(--bs-body-bg);font-weight: bold;">Active status</span><i class="fas fa-play" style="margin-left: 12px;color: var(--bs-body-bg);"></i></div>
+                        <div class="d-flex align-items-center align-items-sm-center align-items-md-center align-items-lg-center align-items-xl-center align-items-xxl-center" id="inactive-status" th:if="${!isActive}"><span style="color: var(--bs-body-bg);font-weight: bold;">Inactive status</span><i class="fas fa-play" style="margin-left: 12px;color: var(--bs-body-bg);"></i></div>
+                    </div>
                     <div class="row mb-3">
                         <div class="col-lg-12">
                             <div class="row mb-3 d-none">

@@ -23,6 +23,7 @@
                 <ul class="navbar-nav text-light" id="accordionSidebar">
                     <li class="nav-item"><a class="nav-link" href="/residents/me" th-=""><i class="fas fa-user"></i><span>Профиль</span></a></li>
                     <li class="nav-item" th:if="${role} == 'COMMANDANT' or ${role} == 'STUFF'"><a class="nav-link" href="/objects/list"><i class="fas fa-table"></i><span>Объекты</span></a></li>
+                    <li class="nav-item" th:if="${role} == 'COMMANDANT' or ${role} == 'STUFF'"><a class="nav-link" href="/object_types/list"><i class="far fa-clone"></i><span>Типы объектов</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="/residents/list"><i class="fas fa-theater-masks"></i><span>Жители</span></a></li>
                     <li class="nav-item"><a class="nav-link" href="/reservations/list"><i class="far fa-calendar-plus"></i><span>Бронирования</span></a></li>
                 </ul>

@@ -81,7 +81,7 @@ public class ReservationController {
 
         if(objectType.getReservationLimit() != null) {
             // Считаем кол-во
-            int count = reservationService.findActiveByObjectId(object.getId()).size();
+            int count = reservationService.getAllIdByObject(object.getId()).size();
             if((count + 1) > object.getType().getReservationLimit())
                 return "error";
         }
@@ -104,6 +104,7 @@ public class ReservationController {
         boolean canDelete = (reservation.getResidentId() == resident.getId()) || (role.equals(RoleType.COMMANDANT.name()));
 
         model.addAttribute("role", role);
+        model.addAttribute("isActive", reservation.isActive());
         model.addAttribute("canDelete", canDelete);
         model.addAttribute("reservation", reservation);
         return "reservation";

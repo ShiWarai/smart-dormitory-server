@@ -34,6 +34,7 @@ public class ObjectController{
     }
 
     @GetMapping("/list")
+    @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
     public String viewObjects(Authentication authentication, Model model) {
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
 
@@ -67,6 +68,7 @@ public class ObjectController{
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
     public String viewObject(@PathVariable Long id, Authentication authentication, Model model) {
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
 
@@ -95,7 +97,7 @@ public class ObjectController{
             return "redirect:/objects/list";
         }
         else
-            return "redirect:/error";
+            return "error";
     }
 
     @GetMapping("/delete/{id}")
