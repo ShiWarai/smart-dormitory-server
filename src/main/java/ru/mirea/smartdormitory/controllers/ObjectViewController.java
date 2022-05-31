@@ -7,13 +7,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.mirea.smartdormitory.model.entities.Object;
-import ru.mirea.smartdormitory.model.types.ObjectType;
 import ru.mirea.smartdormitory.model.types.RoleType;
 import ru.mirea.smartdormitory.services.*;
 
 @Controller
-@RequestMapping(value = "/object_types")
-public class ObjectTypeController {
+@RequestMapping(value = "/objects")
+public class ObjectViewController {
     private ObjectService objectService;
     private ResidentService residentService;
     private RoomService roomService;
@@ -21,7 +20,7 @@ public class ObjectTypeController {
     private StatusTypeService statusTypeService;
 
     @Autowired
-    protected ObjectTypeController(ObjectService objectService,
+    protected ObjectViewController(ObjectService objectService,
                                    ResidentService residentService,
                                    RoomService roomService,
                                    ObjectTypeService objectTypeService,
@@ -35,63 +34,66 @@ public class ObjectTypeController {
 
     @GetMapping("/list")
     @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
-    public String viewObjectTypes(Authentication authentication, Model model) {
+    public String viewObjects(Authentication authentication, Model model) {
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
 
         model.addAttribute("role", role.name());
-        model.addAttribute("object_types", objectTypeService.getAll());
-        return "object_types";
+        model.addAttribute("objects", objectService.getAll());
+        return "objects";
     }
 
     @GetMapping("/create")
     @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
-    public String viewCreationOfObjectType(Authentication authentication, Model model) {
+    public String viewCreationOfObject(Authentication authentication, Model model) {
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
 
-        ObjectType objectType = new ObjectType();
+        Object object = new Object();
 
-        model.addAttribute("object_type", objectType);
+        model.addAttribute("statuses", statusTypeService.getAll());
+        model.addAttribute("types", objectTypeService.getAll());
+        model.addAttribute("rooms", roomService.getAll());
         model.addAttribute("role", role.name());
-        return "create_object_type";
+        model.addAttribute("object", object);
+        return "create_object";
     }
 
     @PostMapping("/create")
     @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
-    public String createObjectType(@ModelAttribute("object_type") ObjectType objectType) {
-        if(objectType.getSchedule().isBlank())
-            objectType.setSchedule(null);
-        
-        if(objectTypeService.create(objectType) != null)
-            return "redirect:/object_types/" + objectType.getId();
+    public String createObject(@ModelAttribute("object") Object object) {
+        if(objectService.create(object) != null)
+            return "redirect:/objects/" + object.getId();
         else
             return "error";
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
-    public String viewObjectType(@PathVariable Long id, Authentication authentication, Model model) {
+    public String viewObject(@PathVariable Long id, Authentication authentication, Model model) {
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
 
-        ObjectType objectType = objectTypeService.findById(id);
+        Object object = objectService.findById(id);
 
-        model.addAttribute("object_type", objectType);
+        model.addAttribute("statuses", statusTypeService.getAll());
+        model.addAttribute("types", objectTypeService.getAll());
+        model.addAttribute("rooms", roomService.getAll());
         model.addAttribute("role", role.name());
-        return "object_type";
+        model.addAttribute("object", object);
+        return "object";
     }
 
     @PostMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
-    public String editObjectType(@PathVariable Long id,
-                               @ModelAttribute("object_type") ObjectType object_type)
+    public String editObject(@PathVariable Long id,
+                               @ModelAttribute("object") Object object)
     {
-        ObjectType old_objectType = objectTypeService.findById(id);
+        Object old_object = objectService.findById(id);
 
-        if(old_objectType != null) {
-            object_type.setId(id);
+        if(old_object != null) {
+            object.setId(id);
 
-            objectTypeService.update(object_type.getId(), object_type);
+            objectService.update(object.getId(), object);
 
-            return "redirect:/object_types/list";
+            return "redirect:/objects/list";
         }
         else
             return "error";
@@ -99,11 +101,11 @@ public class ObjectTypeController {
 
     @GetMapping("/delete/{id}")
     @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
-    public String deleteObjectType(@PathVariable Long id) {
-        ObjectType objectType = objectTypeService.findById(id);
+    public String deleteObject(@PathVariable Long id) {
+        Object object = objectService.findById(id);
 
-        if (objectType != null && objectTypeService.delete(objectType.getId()))
-            return "redirect:/object_types/list";
+        if (object != null && objectService.delete(object.getId()))
+            return "redirect:/objects/list";
         else
             return "error";
     }

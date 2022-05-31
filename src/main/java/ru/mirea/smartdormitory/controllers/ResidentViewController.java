@@ -4,13 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import ru.mirea.smartdormitory.model.entities.Resident;
-import ru.mirea.smartdormitory.model.repositories.IResidentRepository;
 import ru.mirea.smartdormitory.model.types.RoleType;
 import ru.mirea.smartdormitory.services.ResidentService;
 import ru.mirea.smartdormitory.services.RoomService;
@@ -20,12 +18,12 @@ import java.text.SimpleDateFormat;
 
 @Controller
 @RequestMapping(value = "/residents")
-public class ResidentController {
+public class ResidentViewController {
     private ResidentService residentService;
     private RoomService roomService;
 
     @Autowired
-    protected ResidentController(ResidentService residentService, RoomService roomService) {
+    protected ResidentViewController(ResidentService residentService, RoomService roomService) {
         this.residentService = residentService;
         this.roomService = roomService;
     }

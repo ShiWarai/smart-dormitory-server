@@ -1,9 +1,6 @@
 package ru.mirea.smartdormitory.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,20 +14,19 @@ import ru.mirea.smartdormitory.services.ObjectService;
 import ru.mirea.smartdormitory.services.ReservationService;
 import ru.mirea.smartdormitory.services.ResidentService;
 
-import javax.management.relation.Role;
 import java.sql.Timestamp;
 
 @Controller
 @RequestMapping(value = "/reservations")
-public class ReservationController {
+public class ReservationViewController {
     private ReservationService reservationService;
     private ResidentService residentService;
     private ObjectService objectService;
 
     @Autowired
-    protected ReservationController(ReservationService reservationService,
-                                    ResidentService residentService,
-                                    ObjectService objectService) {
+    protected ReservationViewController(ReservationService reservationService,
+                                        ResidentService residentService,
+                                        ObjectService objectService) {
         this.reservationService = reservationService;
         this.residentService = residentService;
         this.objectService = objectService;
