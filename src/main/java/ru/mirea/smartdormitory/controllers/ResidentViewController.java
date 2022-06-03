@@ -73,7 +73,7 @@ public class ResidentViewController {
         int accessLevel = 0;
         if(authentication.getName().equals(student_id))
             accessLevel = 1;
-        if(role == RoleType.COMMANDANT && !student_id.equals(authentication.getName()))
+        if(role.ordinal() >= RoleType.GUARD.ordinal() && !student_id.equals(authentication.getName()))
             accessLevel = 3;
 
         model.addAttribute("rooms", roomService.getAll());
