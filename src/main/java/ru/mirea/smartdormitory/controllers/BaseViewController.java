@@ -17,9 +17,4 @@ public class BaseViewController {
     protected BaseViewController(ResidentService residentService) {
         this.residentService = residentService;
     }
-
-    @GetMapping("/home")
-    public String getHome() {
-        return "home";
-    }
 }

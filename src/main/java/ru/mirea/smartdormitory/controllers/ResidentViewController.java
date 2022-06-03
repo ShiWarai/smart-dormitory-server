@@ -70,8 +70,15 @@ public class ResidentViewController {
 
         Resident resident = residentService.findByStudentId(student_id);
 
+        int accessLevel = 0;
+        if(authentication.getName().equals(student_id))
+            accessLevel = 1;
+        if(role == RoleType.COMMANDANT && !student_id.equals(authentication.getName()))
+            accessLevel = 3;
+
         model.addAttribute("rooms", roomService.getAll());
         model.addAttribute("role", role.name());
+        model.addAttribute("accessLevel", accessLevel);
         model.addAttribute("resident", resident);
         return "resident";
     }
@@ -98,7 +105,7 @@ public class ResidentViewController {
                 if(resident.getStudentId().equals(authentication.getName()))
                     return "redirect:/residents/me";
                 else
-                    return "redirect:/residents/list";
+                    return "redirect:/residents/" + student_id;
             }
             else
                 return "redirect:/error";

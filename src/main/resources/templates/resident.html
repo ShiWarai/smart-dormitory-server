@@ -102,6 +102,7 @@
             th:field="*{surname}"
             class="form-control"
             required
+            th:readonly="${!(accessLevel >= 2)}"
     />
   </div>
   <div class="form-group">
@@ -112,6 +113,7 @@
             th:field="*{name}"
             class="form-control"
             required
+            th:readonly="${!(accessLevel >= 2)}"
     />
   </div>
   <div class="form-group">
@@ -121,6 +123,7 @@
             name="patronymic"
             th:field="*{patronymic}"
             class="form-control"
+            th:readonly="${!(accessLevel >= 2)}"
     />
   </div>
   <div class="form-group">
@@ -131,9 +134,10 @@
             th:field="*{birthdate}"
             class="form-control"
             required
+            th:readonly="${!(accessLevel >= 2)}"
     />
   </div>
-  <div class="form-group">
+  <div class="form-group" th:if="${accessLevel >= 1}">
     <label> Номер студенческого </label>
     <input
             type="text"
@@ -144,7 +148,7 @@
             required
     />
   </div>
-  <div class="form-group">
+  <div class="form-group" th:if="${accessLevel >= 1}">
     <label> ПИН-код </label>
     <input
             type="password"
@@ -163,7 +167,8 @@
             type="number"
             name="roomNumber"
             th:field="*{roomNumber}"
-            id="dropOperator">
+            id="dropOperator"
+            th:disabled="${!(accessLevel >= 2)}">
       <option th:value="null" text="Без комнаты"></option>
       <option
               th:each="room : ${rooms}"
@@ -171,6 +176,7 @@
               th:text="${room.getNumber()}"
       ></option>
     </select>
+    <input type="hidden" name="roomNumber" th:value="*{roomNumber}" th:disabled="${(accessLevel >= 2)}">
   </div>
   <div class="form-group">
     <label> Роль </label>
@@ -180,34 +186,20 @@
             name="role"
             th:field="*{role}"
             id="dropOperator"
-            th:if="${role} == 'COMMANDANT'">
+            th:disabled="${!(accessLevel >= 3)}">
       <option
               th:each="roleType : ${T(ru.mirea.smartdormitory.model.types.RoleType).values()}"
               th:value="${roleType.name()}"
               th:text="${roleType.name()}"
       ></option>
     </select>
-          <select
-            class="form-control"
-            type="text"
-            name="role"
-            th:field="*{role}"
-            id="dropOperator"
-            th:if="${role} != 'COMMANDANT'"
-            disabled>
-      <option
-              th:each="roleType : ${T(ru.mirea.smartdormitory.model.types.RoleType).values()}"
-              th:value="${roleType.name()}"
-              th:text="${roleType.name()}"
-      ></option>
-    </select>
-    <input type="hidden" name="role" th:value="*{role}" th:if="${role} != 'COMMANDANT'">
+    <input type="hidden" name="role" th:value="*{role}" th:disabled="${(accessLevel >= 3)}">
   </div>
   <div class="box-footer" style="margin-top:16px">
-    <button type="submit" class="btn btn-primary btn-lg" th:if="${role} == 'COMMANDANT'">
+    <button type="submit" class="btn btn-primary btn-lg" th:if="${accessLevel >= 1}">
       Подтвердить
     </button>
-    <a class="btn btn-danger btn-lg" th:href="@{/residents/delete/{id} (id=${resident.studentId})}" role="button" th:if="${role} == 'COMMANDANT'">Удалить</a>
+    <a class="btn btn-danger btn-lg" th:href="@{/residents/delete/{id} (id=${resident.studentId})}" role="button" th:if="${accessLevel >= 3}">Удалить</a>
   </div>
 </form></div>
                             </div>

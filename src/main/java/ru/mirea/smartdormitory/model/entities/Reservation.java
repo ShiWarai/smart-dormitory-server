@@ -54,7 +54,7 @@ public class Reservation {
         Timestamp time = new Timestamp(System.currentTimeMillis());
         String cronStr = this.getObject().getType().getSchedule();
 
-        if(this.getStartReservation().after(time) && this.getEndReservation().before(time))
+        if(this.getStartReservation().before(time) || this.getEndReservation().after(time))
             return false;
 
         if(cronStr == null)
