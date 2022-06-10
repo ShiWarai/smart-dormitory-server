@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+
+  server:
+    build: ./server/
+    working_dir: /server/
+    command: java -jar smartdormitory.jar --spring.config.name=server
+    ports:
+      - 8080:8000
+    depends_on:
+      - db
+  
+  db:
+    image: postgres:12.11
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_DB: "smart_dormitory"
+      POSTGRES_USER: "server"
+      POSTGRES_PASSWORD: "smartdormitory"

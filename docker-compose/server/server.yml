@@ -1,0 +1,16 @@
+server:
+  port: 8000
+
+spring:
+  datasource:
+    username: server
+    password: smartdormitory
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://db:5432/smart_dormitory
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath*:database/init.sql
