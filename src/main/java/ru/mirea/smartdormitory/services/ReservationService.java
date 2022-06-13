@@ -16,12 +16,10 @@ import java.util.List;
 @Service
 @Transactional
 public class ReservationService extends AbstractService<Reservation, IReservationRepository>{
-    private final IReservationRepository reservationRepository;
 
     @Autowired
     protected ReservationService(IReservationRepository repository) {
         super(repository);
-        this.reservationRepository = repository;
     }
 
     @Override
@@ -32,16 +30,16 @@ public class ReservationService extends AbstractService<Reservation, IReservatio
     }
 
     public List<Reservation> findAllByResidentId(Long id){
-        return reservationRepository.findAllByResidentId(id);
+        return repository.findAllByResidentId(id);
     }
 
     public List<Reservation> findByObjectId(Long objectId)
     {
-        return reservationRepository.findAllByObjectId(objectId);
+        return repository.findAllByObjectId(objectId);
     }
 
     public void deleteAllByObjectId(Long objectId) {
-        reservationRepository.deleteAllByObjectId(objectId);
+        repository.deleteAllByObjectId(objectId);
     }
 
     public List<Long> getAllActiveIdByObject(Long objectId) {
