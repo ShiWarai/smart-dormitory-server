@@ -1,4 +1,4 @@
-package ru.mirea.smartdormitory.controllers;
+package ru.mirea.smartdormitory.controllers.basic;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
