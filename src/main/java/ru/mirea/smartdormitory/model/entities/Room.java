@@ -16,9 +16,9 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Room {
+
     @Id
-    @Column(name = "number")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "number", unique = true)
     private Long number;
 
     @Column(name = "floor", nullable = false)

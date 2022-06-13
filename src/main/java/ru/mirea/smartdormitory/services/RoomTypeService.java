@@ -1,6 +1,7 @@
 package ru.mirea.smartdormitory.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mirea.smartdormitory.model.repositories.IRoomTypeRepository;
@@ -21,5 +22,16 @@ public class RoomTypeService extends AbstractService<RoomType, IRoomTypeReposito
         findById(id);
         entity.setId(id);
         return create(entity);
+    }
+
+    @Bean
+    public void createBaseRoomTypes(){
+        RoomType forLiving = new RoomType(1L,"жилая");
+        if (repository.findById(forLiving.getId()).isEmpty())
+            repository.save(forLiving);
+
+        RoomType forService = new RoomType(2L, "служебная");
+        if (repository.findById(forService.getId()).isEmpty())
+            repository.save(forService);
     }
 }

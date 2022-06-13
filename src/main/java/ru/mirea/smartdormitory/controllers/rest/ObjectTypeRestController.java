@@ -13,19 +13,17 @@ import ru.mirea.smartdormitory.services.ReservationService;
 import java.util.List;
 
 @RestController
+@RequestMapping(value = "/object_type")
 public class ObjectTypeRestController {
 
     private final ObjectTypeService objectTypeService;
-    private final ReservationService reservationService;
 
     @Autowired
-    public ObjectTypeRestController(ObjectTypeService objectTypeService,
-                                    ReservationService reservationService) {
+    public ObjectTypeRestController(ObjectTypeService objectTypeService) {
         this.objectTypeService = objectTypeService;
-        this.reservationService = reservationService;
     }
 
-    @GetMapping(value="/object_type/schedule/{id}")
+    @GetMapping(value="/schedule/{id}")
     public ResponseEntity<?> getSchedule(@PathVariable Long id) {
         ObjectType objectType = objectTypeService.findById(id);
         return objectType != null
@@ -33,7 +31,7 @@ public class ObjectTypeRestController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PutMapping(value="/object_type/schedule/{id}")
+    @PutMapping(value="schedule/{id}")
     @PreAuthorize("hasAuthority('COMMANDANT')")
     public ResponseEntity<?> setSchedule(@PathVariable Long id, @RequestBody String cron_schedule) {
         ObjectType objectType = objectTypeService.findById(id);
@@ -49,7 +47,7 @@ public class ObjectTypeRestController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping(value="/object_types")
+    @GetMapping(value="/all")
     public ResponseEntity<?> getObjectTypes() {
         final List<ObjectType> objectTypes = objectTypeService.getAll();
         return objectTypes != null && !objectTypes.isEmpty()
