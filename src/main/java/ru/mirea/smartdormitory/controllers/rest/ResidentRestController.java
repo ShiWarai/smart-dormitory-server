@@ -1,4 +1,4 @@
-package ru.mirea.smartdormitory.controllers;
+package ru.mirea.smartdormitory.controllers.rest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
