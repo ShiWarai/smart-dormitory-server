@@ -23,13 +23,13 @@ public class ObjectTypeController {
     }
     
     @PostMapping(value = "/", consumes = {"application/json"})
-    @PreAuthorize("hasAuthority('COMMANDANT')")
+    @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
     public ResponseEntity<?> createObjectType(@RequestBody ObjectType objectType) {
         return new ResponseEntity<Long>(objectTypeService.create(objectType).getId(), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('COMMANDANT')")
+    @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
     public ResponseEntity<ObjectType> updateObjectType(@PathVariable Long id, @RequestBody ObjectType objectType) {
         if(objectTypeService.findById(id) != null) {
             objectType.setId(id);
@@ -48,7 +48,7 @@ public class ObjectTypeController {
     }
 
     @PutMapping(value="/schedule/{id}")
-    @PreAuthorize("hasAuthority('COMMANDANT')")
+    @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
     public ResponseEntity<?> setSchedule(@PathVariable Long id, @RequestBody String cron_schedule) {
         ObjectType objectType = objectTypeService.findById(id);
 
@@ -64,6 +64,7 @@ public class ObjectTypeController {
     }
 
     @GetMapping(value="/{id}")
+    @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
     public ResponseEntity<?> getObjectType(@PathVariable Long id) {
         ObjectType objectType = objectTypeService.findById(id);
         return objectType != null
@@ -72,6 +73,7 @@ public class ObjectTypeController {
     }
 
     @GetMapping(value="/all")
+    @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
     public ResponseEntity<?> getObjectTypes() {
         final List<ObjectType> objectTypes = objectTypeService.getAll();
         return objectTypes != null && !objectTypes.isEmpty()
@@ -80,7 +82,7 @@ public class ObjectTypeController {
     }
     
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('COMMANDANT')")
+    @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
     public ResponseEntity<?> deleteObjectType(@PathVariable Long id) {
         if (objectTypeService.findById(id) != null && objectTypeService.delete(id))
             return new ResponseEntity<>(HttpStatus.OK);
