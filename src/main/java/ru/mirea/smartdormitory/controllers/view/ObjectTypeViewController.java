@@ -11,7 +11,7 @@ import ru.mirea.smartdormitory.model.types.RoleType;
 import ru.mirea.smartdormitory.services.*;
 
 @Controller
-@RequestMapping(value = "/object_type")
+@RequestMapping(value = "/object_types")
 public class ObjectTypeViewController {
     private ObjectService objectService;
     private ResidentService residentService;
