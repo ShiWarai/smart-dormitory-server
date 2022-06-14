@@ -1,6 +1,5 @@
 package ru.mirea.smartdormitory.controllers.rest;
 
-import org.quartz.CronExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,17 +7,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ru.mirea.smartdormitory.model.entities.Object;
-import ru.mirea.smartdormitory.model.entities.Reservation;
 import ru.mirea.smartdormitory.services.*;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "/object")
-public class ObjectRestController {
+public class ObjectController {
 
     private final ObjectService objectService;
     private final ResidentService residentService;
@@ -29,11 +24,11 @@ public class ObjectRestController {
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @Autowired
-    public ObjectRestController(ObjectService objectService,
-                                ResidentService residentService,
-                                StatusTypeService statusTypeService,
-                                ObjectTypeService objectTypeService,
-                                ReservationService reservationService) {
+    public ObjectController(ObjectService objectService,
+                            ResidentService residentService,
+                            StatusTypeService statusTypeService,
+                            ObjectTypeService objectTypeService,
+                            ReservationService reservationService) {
         this.objectService = objectService;
         this.residentService = residentService;
         this.statusTypeService = statusTypeService;

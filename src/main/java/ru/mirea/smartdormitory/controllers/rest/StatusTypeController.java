@@ -11,12 +11,12 @@ import ru.mirea.smartdormitory.services.StatusTypeService;
 import java.util.List;
 
 @RestController
-public class StatusTypeRestController {
+public class StatusTypeController {
 
     private final StatusTypeService statusTypeService;
 
     @Autowired
-    public StatusTypeRestController(StatusTypeService statusTypeService) {
+    public StatusTypeController(StatusTypeService statusTypeService) {
         this.statusTypeService = statusTypeService;
     }
 

@@ -14,12 +14,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/resident")
-public class ResidentRestController {
+public class ResidentController {
 
     private final ResidentService residentService;
 
     @Autowired
-    public ResidentRestController(ResidentService service) {
+    public ResidentController(ResidentService service) {
         this.residentService = service;
     }
 

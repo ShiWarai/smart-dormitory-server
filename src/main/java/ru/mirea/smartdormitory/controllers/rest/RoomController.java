@@ -12,12 +12,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/room")
-public class RoomRestController {
+public class RoomController {
 
     private final RoomService roomService;
 
     @Autowired
-    public RoomRestController(RoomService roomService) {
+    public RoomController(RoomService roomService) {
         this.roomService = roomService;
     }
 

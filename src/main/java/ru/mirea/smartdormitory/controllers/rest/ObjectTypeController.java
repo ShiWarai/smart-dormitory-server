@@ -5,21 +5,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import ru.mirea.smartdormitory.model.entities.Object;
 import ru.mirea.smartdormitory.model.types.ObjectType;
 import ru.mirea.smartdormitory.services.ObjectTypeService;
-import ru.mirea.smartdormitory.services.ReservationService;
 
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "/object_type")
-public class ObjectTypeRestController {
+public class ObjectTypeController {
 
     private final ObjectTypeService objectTypeService;
 
     @Autowired
-    public ObjectTypeRestController(ObjectTypeService objectTypeService) {
+    public ObjectTypeController(ObjectTypeService objectTypeService) {
         this.objectTypeService = objectTypeService;
     }
 

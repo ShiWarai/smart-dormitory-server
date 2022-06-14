@@ -13,22 +13,21 @@ import ru.mirea.smartdormitory.services.ObjectService;
 import ru.mirea.smartdormitory.services.ReservationService;
 import ru.mirea.smartdormitory.services.ResidentService;
 
-import javax.management.relation.Role;
 import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "/reservation")
-public class ReservationRestController {
+public class ReservationController {
 
     private final ReservationService reservationService;
     private final ObjectService objectService;
     private final ResidentService residentService;
 
     @Autowired
-    public ReservationRestController(ReservationService reservationService,
-                                     ObjectService objectService,
-                                     ResidentService residentService) {
+    public ReservationController(ReservationService reservationService,
+                                 ObjectService objectService,
+                                 ResidentService residentService) {
         this.reservationService = reservationService;
         this.objectService = objectService;
         this.residentService = residentService;
