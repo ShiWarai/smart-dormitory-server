@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ru.mirea.smartdormitory.model.entities.Object;
 import ru.mirea.smartdormitory.model.entities.Reservation;
+import ru.mirea.smartdormitory.model.request_bodies.ReservationBody;
 import ru.mirea.smartdormitory.model.types.ObjectType;
 import ru.mirea.smartdormitory.model.types.RoleType;
 import ru.mirea.smartdormitory.services.ObjectService;
@@ -34,7 +35,7 @@ public class ReservationController {
     }
 
     @PostMapping(value = "/", consumes = {"application/json"})
-    public ResponseEntity<?> createReservation(Authentication authentication, @RequestBody Reservation reservation) {
+    public ResponseEntity<?> createReservation(Authentication authentication, @RequestBody ReservationBody reservation) {
         Timestamp time = new Timestamp(System.currentTimeMillis());
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
         Object object = objectService.findById(reservation.getObjectId());
@@ -47,11 +48,16 @@ public class ReservationController {
                 return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
         }
 
-        if(role != RoleType.COMMANDANT)
-            reservation.setResidentId(residentService.findByStudentId(authentication.getName()).getId());
+        Reservation reservation_entity = new Reservation();
+
+        reservation_entity.setObjectId(reservation.getObjectId());
+        reservation_entity.setReason(reservation.getReason());
+        reservation_entity.setResidentId(residentService.findByStudentId(authentication.getName()).getId());
+        reservation_entity.setStartReservation(reservation.getStartReservation());
+        reservation_entity.setEndReservation(reservation.getEndReservation());
 
         if(reservation.getEndReservation().after(time))
-            return new ResponseEntity<Long>(reservationService.create(reservation).getId(), HttpStatus.OK);
+            return new ResponseEntity<Long>(reservationService.create(reservation_entity).getId(), HttpStatus.OK);
         else
             return new ResponseEntity<>(HttpStatus.REQUEST_TIMEOUT);
     }

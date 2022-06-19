@@ -33,7 +33,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/assets/**").permitAll()
+                .antMatchers("/assets/**", "/ping").permitAll()
                 .anyRequest().authenticated()
                 .and().httpBasic()
                 .and().formLogin().loginPage("/login").permitAll().defaultSuccessUrl("/residents/me", true)
