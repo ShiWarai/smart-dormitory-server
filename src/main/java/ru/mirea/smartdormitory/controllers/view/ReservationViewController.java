@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.mirea.smartdormitory.model.entities.Object;
 import ru.mirea.smartdormitory.model.entities.Reservation;
 import ru.mirea.smartdormitory.model.entities.Resident;
+import ru.mirea.smartdormitory.model.request_bodies.ReservationBody;
 import ru.mirea.smartdormitory.model.types.ObjectType;
 import ru.mirea.smartdormitory.model.types.RoleType;
 import ru.mirea.smartdormitory.services.ObjectService;
@@ -69,7 +70,7 @@ public class ReservationViewController {
     }
 
     @PostMapping("/create")
-    public String createReservation(Authentication authentication, @ModelAttribute("reservation") Reservation reservation) {
+    public String createReservation(Authentication authentication, @ModelAttribute ReservationBody reservation) {
         Timestamp time = new Timestamp(System.currentTimeMillis());
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
         Object object = objectService.findById(reservation.getObjectId());
@@ -82,11 +83,16 @@ public class ReservationViewController {
                 return "error";
         }
 
-        if(role != RoleType.COMMANDANT)
-            reservation.setResidentId(residentService.findByStudentId(authentication.getName()).getId());
+        Reservation reservation_entity = new Reservation();
 
-        if(reservation.getEndReservation().after(time) && reservationService.create(reservation) != null)
-            return "redirect:/reservations/" + reservation.getId();
+        reservation_entity.setObjectId(reservation.getObjectId());
+        reservation_entity.setReason(reservation.getReason());
+        reservation_entity.setResidentId(residentService.findByStudentId(authentication.getName()).getId());
+        reservation_entity.setStartReservation(reservation.getStartReservation());
+        reservation_entity.setEndReservation(reservation.getEndReservation());
+
+        if(reservation.getEndReservation().after(time) && reservationService.create(reservation_entity) != null)
+            return "redirect:/reservations/" + reservation_entity.getId();
         else
             return "error";
     }
