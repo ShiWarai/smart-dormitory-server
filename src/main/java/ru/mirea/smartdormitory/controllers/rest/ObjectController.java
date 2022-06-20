@@ -58,6 +58,18 @@ public class ObjectController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping(value="/by")
+    public ResponseEntity<List<Object>> getObjectsBy(@RequestParam(value = "room", required = false) Long roomNumber) {
+
+        List<Object> objects = null;
+        if(roomNumber != null)
+            objects = objectService.getAllByRoomNumber(roomNumber);
+
+        return objects != null && !objects.isEmpty()
+                ? new ResponseEntity<>(objects, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @GetMapping(value="/status/{id}")
     public ResponseEntity<Long> getObjectStatus(@PathVariable Long id) {
         Object object = objectService.findById(id);

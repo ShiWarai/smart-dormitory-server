@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.mirea.smartdormitory.model.entities.Object;
 import ru.mirea.smartdormitory.repositories.IObjectRepository;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class ObjectService extends AbstractService<Object, IObjectRepository> {
@@ -19,5 +21,10 @@ public class ObjectService extends AbstractService<Object, IObjectRepository> {
         findById(id);
         entity.setId(id);
         return create(entity);
+    }
+
+    public List<Object> getAllByRoomNumber(long roomNumber)
+    {
+        return repository.findAllByRoomNumber(roomNumber);
     }
 }
