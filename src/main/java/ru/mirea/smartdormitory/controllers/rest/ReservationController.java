@@ -14,6 +14,7 @@ import ru.mirea.smartdormitory.services.ObjectService;
 import ru.mirea.smartdormitory.services.ReservationService;
 import ru.mirea.smartdormitory.services.ResidentService;
 
+import javax.websocket.server.PathParam;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -81,6 +82,23 @@ public class ReservationController {
     @GetMapping(value="/all")
     public ResponseEntity<List<Reservation>> getReservations() {
         final List<Reservation> reservations = reservationService.getAll();
+        return reservations != null && !reservations.isEmpty()
+                ? new ResponseEntity<>(reservations, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping(value="/by")
+    public ResponseEntity<List<Reservation>> getReservationsBy(@RequestParam(value = "object_id", required = false) Long objectId,
+                                                               @RequestParam(value = "student_id", required = false) String studentId) {
+        List<Reservation> reservations = null;
+        if(objectId != null && studentId != null)
+            reservations =  reservationService.findAllByObjectIdAndResidentId(objectId, residentService.findByStudentId(studentId).getId());
+        else if (objectId != null) {
+            reservations = reservationService.findByObjectId(objectId);
+        } else if (studentId != null) {
+            reservations = reservationService.findAllByResidentId(residentService.findByStudentId(studentId).getId());
+        }
+
         return reservations != null && !reservations.isEmpty()
                 ? new ResponseEntity<>(reservations, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);

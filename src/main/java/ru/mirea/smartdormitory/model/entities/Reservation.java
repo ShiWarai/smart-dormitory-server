@@ -54,8 +54,10 @@ public class Reservation {
         Timestamp time = new Timestamp(System.currentTimeMillis());
         String cronStr = this.getObject().getType().getSchedule();
 
-        if(this.getStartReservation().after(time) || this.getEndReservation().before(time))
+        if(this.getStartReservation().after(time) || this.getEndReservation().before(time)) {
+            System.out.println("Not in range!\n");
             return false;
+        }
 
         if(cronStr == null || cronStr.isBlank())
             return true;
@@ -68,6 +70,7 @@ public class Reservation {
             System.out.printf("WRONG CRON: %s\n", cronStr);
         }
 
+        System.out.println("Not in schedule range!\n");
         return false;
     }
 }

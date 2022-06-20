@@ -29,13 +29,19 @@ public class ReservationService extends AbstractService<Reservation, IReservatio
         return create(entity);
     }
 
-    public List<Reservation> findAllByResidentId(Long id){
+    public List<Reservation> findAllByResidentId(Long id)
+    {
         return repository.findAllByResidentId(id);
     }
 
     public List<Reservation> findByObjectId(Long objectId)
     {
         return repository.findAllByObjectId(objectId);
+    }
+
+    public List<Reservation> findAllByObjectIdAndResidentId(Long object_id, Long resident_id)
+    {
+        return repository.findAllByObjectIdAndResidentId(object_id, resident_id);
     }
 
     public void deleteAllByObjectId(Long objectId) {
