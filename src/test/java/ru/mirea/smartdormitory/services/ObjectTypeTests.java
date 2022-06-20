@@ -9,7 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import ru.mirea.smartdormitory.model.repositories.IObjectTypeRepository;
+import ru.mirea.smartdormitory.repositories.IObjectTypeRepository;
 import ru.mirea.smartdormitory.model.types.ObjectType;
 
 

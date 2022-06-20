@@ -12,7 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.mirea.smartdormitory.model.entities.Object;
 import ru.mirea.smartdormitory.model.entities.Reservation;
 import ru.mirea.smartdormitory.model.entities.Resident;
-import ru.mirea.smartdormitory.model.repositories.IReservationRepository;
+import ru.mirea.smartdormitory.repositories.IReservationRepository;
 
 import java.sql.Timestamp;
 

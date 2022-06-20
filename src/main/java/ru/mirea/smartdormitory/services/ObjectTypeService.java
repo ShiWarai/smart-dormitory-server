@@ -3,7 +3,7 @@ package ru.mirea.smartdormitory.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.mirea.smartdormitory.model.repositories.IObjectTypeRepository;
+import ru.mirea.smartdormitory.repositories.IObjectTypeRepository;
 import ru.mirea.smartdormitory.model.types.ObjectType;
 
 

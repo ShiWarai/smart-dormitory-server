@@ -1,4 +1,4 @@
-package ru.mirea.smartdormitory.model.repositories;
+package ru.mirea.smartdormitory.repositories;
 
 import lombok.Value;
 import org.springframework.data.jpa.repository.JpaRepository;

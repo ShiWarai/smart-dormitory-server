@@ -5,10 +5,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mirea.smartdormitory.model.entities.Room;
-import ru.mirea.smartdormitory.model.repositories.IRoomRepository;
+import ru.mirea.smartdormitory.repositories.IRoomRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional

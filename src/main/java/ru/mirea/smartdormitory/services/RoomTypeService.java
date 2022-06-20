@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.mirea.smartdormitory.model.repositories.IRoomTypeRepository;
+import ru.mirea.smartdormitory.repositories.IRoomTypeRepository;
 import ru.mirea.smartdormitory.model.types.RoomType;
 
 

@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.mirea.smartdormitory.model.entities.Resident;
-import ru.mirea.smartdormitory.model.repositories.IStatusTypeRepository;
-import ru.mirea.smartdormitory.model.types.RoleType;
+import ru.mirea.smartdormitory.repositories.IStatusTypeRepository;
 import ru.mirea.smartdormitory.model.types.StatusType;
 
 

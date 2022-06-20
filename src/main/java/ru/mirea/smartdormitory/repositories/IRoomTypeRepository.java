@@ -1,4 +1,4 @@
-package ru.mirea.smartdormitory.model.repositories;
+package ru.mirea.smartdormitory.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

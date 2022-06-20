@@ -9,7 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mirea.smartdormitory.model.entities.Resident;
-import ru.mirea.smartdormitory.model.repositories.IResidentRepository;
+import ru.mirea.smartdormitory.repositories.IResidentRepository;
 import ru.mirea.smartdormitory.model.types.RoleType;
 
 @Service
