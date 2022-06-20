@@ -29,7 +29,7 @@ public class RoomTypeController {
 
     @GetMapping(value="/{id}")
     public ResponseEntity<RoomType> getRoomType(@PathVariable Long id) {
-        RoomType roomType = roomTypeService.findById(id);
+        RoomType roomType = roomTypeService.getById(id);
         return roomType != null
                 ? new ResponseEntity<>(roomType, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -46,7 +46,7 @@ public class RoomTypeController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('COMMANDANT')")
     public ResponseEntity<RoomType> updateRoomType(@PathVariable Long id, @RequestBody RoomType roomType) {
-        if(roomTypeService.findById(id) != null) {
+        if(roomTypeService.getById(id) != null) {
             roomType.setId(id);
             return new ResponseEntity<>(roomTypeService.update(roomType.getId(), roomType), HttpStatus.OK);
         }

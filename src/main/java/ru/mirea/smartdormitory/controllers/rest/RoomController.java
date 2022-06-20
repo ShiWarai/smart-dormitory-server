@@ -29,7 +29,7 @@ public class RoomController {
 
     @GetMapping(value="/{number}")
     public ResponseEntity<Room> getRoom(@PathVariable Long number) {
-        Room room = roomService.findById(number);
+        Room room = roomService.getById(number);
         return room != null
                 ? new ResponseEntity<>(room, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -46,7 +46,7 @@ public class RoomController {
     @PutMapping("/{number}")
     @PreAuthorize("hasAuthority('COMMANDANT')")
     public ResponseEntity<Room> updateRoom(@PathVariable Long number, @RequestBody Room room) {
-        if(roomService.findById(number) != null) {
+        if(roomService.getById(number) != null) {
             room.setNumber(number);
             return new ResponseEntity<Room>(roomService.update(room.getNumber(), room), HttpStatus.OK);
         }
@@ -57,7 +57,7 @@ public class RoomController {
     @DeleteMapping("/{number}")
     @PreAuthorize("hasAuthority('COMMANDANT')")
     public ResponseEntity<?> deleteRoom(@PathVariable Long number) {
-            if (roomService.findById(number) != null && roomService.delete(number))
+            if (roomService.getById(number) != null && roomService.delete(number))
                 return new ResponseEntity<>(HttpStatus.OK);
             else
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);

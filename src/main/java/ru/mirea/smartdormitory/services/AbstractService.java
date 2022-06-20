@@ -17,7 +17,7 @@ public  abstract class AbstractService<T, D extends JpaRepository<T, Long>> {
         return repository.save(entity);
     }
 
-    public T findById(Long id) {
+    public T getById(Long id) {
         Optional<T> obj = repository.findById(id);
         if(!obj.isEmpty())
             return obj.get();
@@ -26,14 +26,14 @@ public  abstract class AbstractService<T, D extends JpaRepository<T, Long>> {
     }
 
     public T update(Long id, T entity) {
-        if(findById(id) != null)
+        if(getById(id) != null)
             return repository.save(entity);
         else
             return null;
     }
 
     public boolean delete(Long id) {
-        if (findById(id) == null) return false;
+        if (getById(id) == null) return false;
         repository.deleteById(id);
         return true;
     }

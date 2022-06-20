@@ -71,7 +71,7 @@ public class ObjectViewController {
     public String viewObject(@PathVariable Long id, Authentication authentication, Model model) {
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
 
-        Object object = objectService.findById(id);
+        Object object = objectService.getById(id);
 
         model.addAttribute("statuses", statusTypeService.getAll());
         model.addAttribute("types", objectTypeService.getAll());
@@ -86,7 +86,7 @@ public class ObjectViewController {
     public String editObject(@PathVariable Long id,
                                @ModelAttribute("object") Object object)
     {
-        Object old_object = objectService.findById(id);
+        Object old_object = objectService.getById(id);
 
         if(old_object != null) {
             object.setId(id);
@@ -102,7 +102,7 @@ public class ObjectViewController {
     @GetMapping("/delete/{id}")
     @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
     public String deleteObject(@PathVariable Long id) {
-        Object object = objectService.findById(id);
+        Object object = objectService.getById(id);
 
         if (object != null && objectService.delete(object.getId()))
             return "redirect:/objects/list";

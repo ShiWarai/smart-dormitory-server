@@ -44,17 +44,17 @@ public class ReservationViewController {
 
     @GetMapping("/my")
     public String viewMyReservations(Authentication authentication, Model model) {
-        Resident resident = residentService.findByStudentId(authentication.getName());
+        Resident resident = residentService.getByStudentId(authentication.getName());
 
         model.addAttribute("role", resident.getRole());
-        model.addAttribute("reservations", reservationService.findAllByResidentId(resident.getId()));
+        model.addAttribute("reservations", reservationService.getAllByResidentId(resident.getId()));
         return "reservations";
     }
 
     @GetMapping("/create")
     public String viewCreationOfReservation(Authentication authentication, Model model) {
         Timestamp time = new Timestamp(System.currentTimeMillis());
-        Resident resident = residentService.findByStudentId(authentication.getName());
+        Resident resident = residentService.getByStudentId(authentication.getName());
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
 
         Reservation reservation = new Reservation();
@@ -73,7 +73,7 @@ public class ReservationViewController {
     public String createReservation(Authentication authentication, @ModelAttribute ReservationBody reservation) {
         Timestamp time = new Timestamp(System.currentTimeMillis());
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
-        Object object = objectService.findById(reservation.getObjectId());
+        Object object = objectService.getById(reservation.getObjectId());
         ObjectType objectType = object.getType();
 
         if(objectType.getReservationLimit() != null) {
@@ -87,7 +87,7 @@ public class ReservationViewController {
 
         reservation_entity.setObjectId(reservation.getObjectId());
         reservation_entity.setReason(reservation.getReason());
-        reservation_entity.setResidentId(residentService.findByStudentId(authentication.getName()).getId());
+        reservation_entity.setResidentId(residentService.getByStudentId(authentication.getName()).getId());
         reservation_entity.setStartReservation(reservation.getStartReservation());
         reservation_entity.setEndReservation(reservation.getEndReservation());
 
@@ -99,10 +99,10 @@ public class ReservationViewController {
 
     @GetMapping("/{id}")
     public String viewReservation(@PathVariable Long id, Authentication authentication, Model model) {
-        Resident resident = residentService.findByStudentId(authentication.getName());
+        Resident resident = residentService.getByStudentId(authentication.getName());
         String role = resident.getRole();
 
-        Reservation reservation = reservationService.findById(id);
+        Reservation reservation = reservationService.getById(id);
         boolean canDelete = (reservation.getResidentId() == resident.getId()) || (role.equals(RoleType.COMMANDANT.name()));
 
         model.addAttribute("role", role);
@@ -114,17 +114,17 @@ public class ReservationViewController {
 
     @GetMapping("/delete/{id}")
     public String deleteReservation(Authentication authentication, @PathVariable Long id) {
-        Reservation reservation = reservationService.findById(id);
+        Reservation reservation = reservationService.getById(id);
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
 
         if(role.ordinal() >= RoleType.STUFF.ordinal()) {
-            if (reservationService.findById(id) != null && reservationService.delete(id))
+            if (reservationService.getById(id) != null && reservationService.delete(id))
                 return "redirect:/reservations/list";
             else
                 return "error";
         }
-        else if(residentService.findById(reservation.getResidentId()).getStudentId().equals(authentication.getName()))
-            if (reservationService.findById(id) != null && reservationService.delete(id))
+        else if(residentService.getById(reservation.getResidentId()).getStudentId().equals(authentication.getName()))
+            if (reservationService.getById(id) != null && reservationService.delete(id))
                 return "redirect:/reservations/list";
             else
                 return "error";

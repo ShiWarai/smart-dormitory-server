@@ -19,14 +19,14 @@ public class RoomService extends AbstractService<Room, IRoomRepository> {
 
     @Override
     public Room update(Long number, Room entity) {
-        if(findById(number) != null)
+        if(getById(number) != null)
             return repository.save(entity);
         else
             return null;
     }
 
     @Override
-    public Room findById(Long number) {
+    public Room getById(Long number) {
         // id = number
         return repository.findByNumber(number);
     }

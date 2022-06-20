@@ -19,7 +19,7 @@ public class RoomTypeService extends AbstractService<RoomType, IRoomTypeReposito
 
     @Override
     public RoomType update(Long id, RoomType entity) {
-        findById(id);
+        getById(id);
         entity.setId(id);
         return create(entity);
     }

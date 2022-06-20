@@ -18,7 +18,7 @@ public class ObjectService extends AbstractService<Object, IObjectRepository> {
 
     @Override
     public Object update(Long id, Object entity) {
-        findById(id);
+        getById(id);
         entity.setId(id);
         return create(entity);
     }

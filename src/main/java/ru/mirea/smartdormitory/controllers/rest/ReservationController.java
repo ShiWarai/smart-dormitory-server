@@ -14,7 +14,6 @@ import ru.mirea.smartdormitory.services.ObjectService;
 import ru.mirea.smartdormitory.services.ReservationService;
 import ru.mirea.smartdormitory.services.ResidentService;
 
-import javax.websocket.server.PathParam;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class ReservationController {
     public ResponseEntity<?> createReservation(Authentication authentication, @RequestBody ReservationBody reservation) {
         Timestamp time = new Timestamp(System.currentTimeMillis());
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
-        Object object = objectService.findById(reservation.getObjectId());
+        Object object = objectService.getById(reservation.getObjectId());
         ObjectType objectType = object.getType();
 
         if(objectType.getReservationLimit() != null) {
@@ -53,7 +52,7 @@ public class ReservationController {
 
         reservation_entity.setObjectId(reservation.getObjectId());
         reservation_entity.setReason(reservation.getReason());
-        reservation_entity.setResidentId(residentService.findByStudentId(authentication.getName()).getId());
+        reservation_entity.setResidentId(residentService.getByStudentId(authentication.getName()).getId());
         reservation_entity.setStartReservation(reservation.getStartReservation());
         reservation_entity.setEndReservation(reservation.getEndReservation());
 
@@ -65,7 +64,7 @@ public class ReservationController {
 
     @GetMapping(value="/{id}")
     public ResponseEntity<Reservation> getReservation(@PathVariable Long id) {
-        Reservation reservation = reservationService.findById(id);
+        Reservation reservation = reservationService.getById(id);
         return reservation != null
                 ? new ResponseEntity<>(reservation, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -73,7 +72,7 @@ public class ReservationController {
 
     @GetMapping(value="/is_active/{id}")
     public ResponseEntity<?> isActive(@PathVariable Long id) {
-        Reservation reservation = reservationService.findById(id);
+        Reservation reservation = reservationService.getById(id);
         return reservation != null
                 ? new ResponseEntity<>(reservation.isActive(), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -92,11 +91,11 @@ public class ReservationController {
                                                                @RequestParam(value = "student_id", required = false) String studentId) {
         List<Reservation> reservations = null;
         if(objectId != null && studentId != null)
-            reservations =  reservationService.findAllByObjectIdAndResidentId(objectId, residentService.findByStudentId(studentId).getId());
+            reservations =  reservationService.getAllByObjectIdAndResidentId(objectId, residentService.getByStudentId(studentId).getId());
         else if (objectId != null) {
-            reservations = reservationService.findByObjectId(objectId);
+            reservations = reservationService.getByObjectId(objectId);
         } else if (studentId != null) {
-            reservations = reservationService.findAllByResidentId(residentService.findByStudentId(studentId).getId());
+            reservations = reservationService.getAllByResidentId(residentService.getByStudentId(studentId).getId());
         }
 
         return reservations != null && !reservations.isEmpty()
@@ -107,16 +106,16 @@ public class ReservationController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteReservation(Authentication authentication, @PathVariable Long id) {
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
-        Reservation reservation = reservationService.findById(id);
+        Reservation reservation = reservationService.getById(id);
 
         if(role.ordinal() >= RoleType.STUFF.ordinal()) {
-            if (reservationService.findById(id) != null && reservationService.delete(id))
+            if (reservationService.getById(id) != null && reservationService.delete(id))
                 return new ResponseEntity<>(HttpStatus.OK);
             else
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        else if(residentService.findById(reservation.getResidentId()).getStudentId().equals(authentication.getName()))
-            if (reservationService.findById(id) != null && reservationService.delete(id))
+        else if(residentService.getById(reservation.getResidentId()).getStudentId().equals(authentication.getName()))
+            if (reservationService.getById(id) != null && reservationService.delete(id))
                 return new ResponseEntity<>(HttpStatus.OK);
             else
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);

@@ -20,22 +20,22 @@ public class ReservationService extends AbstractService<Reservation, IReservatio
 
     @Override
     public Reservation update(Long id, Reservation entity) {
-        findById(id);
+        getById(id);
         entity.setId(id);
         return create(entity);
     }
 
-    public List<Reservation> findAllByResidentId(Long id)
+    public List<Reservation> getAllByResidentId(Long id)
     {
         return repository.findAllByResidentId(id);
     }
 
-    public List<Reservation> findByObjectId(Long objectId)
+    public List<Reservation> getByObjectId(Long objectId)
     {
         return repository.findAllByObjectId(objectId);
     }
 
-    public List<Reservation> findAllByObjectIdAndResidentId(Long object_id, Long resident_id)
+    public List<Reservation> getAllByObjectIdAndResidentId(Long object_id, Long resident_id)
     {
         return repository.findAllByObjectIdAndResidentId(object_id, resident_id);
     }
@@ -47,7 +47,7 @@ public class ReservationService extends AbstractService<Reservation, IReservatio
     public List<Long> getAllActiveIdByObject(Long objectId) {
         List<Long> currentReservationIds = new ArrayList<Long>();
 
-        List<Reservation> activeReservations = this.findByObjectId(objectId);
+        List<Reservation> activeReservations = this.getByObjectId(objectId);
 
         for (Reservation reservation : activeReservations) {
             if(reservation.isActive())
@@ -60,7 +60,7 @@ public class ReservationService extends AbstractService<Reservation, IReservatio
     public List<Long> getAllIdByObject(Long objectId) {
         List<Long> currentReservationIds = new ArrayList<Long>();
 
-        List<Reservation> reservations = this.findByObjectId(objectId);
+        List<Reservation> reservations = this.getByObjectId(objectId);
 
         for (Reservation reservation : reservations) {
             currentReservationIds.add(reservation.getId());
