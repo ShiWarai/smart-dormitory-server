@@ -56,7 +56,7 @@ public class ObjectService extends AbstractService<Object, IObjectRepository> {
             return false;
 
         if(objectType.getReservationLimit() != null) {
-            int count = reservationService.getAllIdByObject(object.getId()).size();
+            int count = reservationService.getAllIdByObject(object.getId()).size(); // Calculating is need
             if((count + 1) > object.getType().getReservationLimit())
                 return false;
         }
