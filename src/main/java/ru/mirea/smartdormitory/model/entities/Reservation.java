@@ -54,10 +54,14 @@ public class Reservation {
         Timestamp time = new Timestamp(System.currentTimeMillis());
         String cronStr = this.getObject().getType().getSchedule();
 
-        if(this.getStartReservation().before(time) || this.getEndReservation().after(time))
+        if(object.getStatusId() != 100L) // Object is busy
             return false;
 
-        if(cronStr == null)
+        if(this.getStartReservation().after(time) || this.getEndReservation().before(time)) {
+            return false;
+        }
+
+        if(cronStr == null || cronStr.isBlank())
             return true;
 
         try {

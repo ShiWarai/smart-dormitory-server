@@ -6,8 +6,6 @@ import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import ru.mirea.smartdormitory.model.entities.Resident;
-import ru.mirea.smartdormitory.model.repositories.IResidentRepository;
 import ru.mirea.smartdormitory.services.ResidentService;
 
 import javax.servlet.ServletException;

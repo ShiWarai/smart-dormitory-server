@@ -26,7 +26,7 @@ public class ResidentController {
     @PostMapping(value = "/", consumes = {"application/json"})
     @PreAuthorize("hasAnyAuthority('COMMANDANT')")
     public ResponseEntity<?> createResident(@RequestBody Resident resident) {
-        if(residentService.findByStudentId(resident.getStudentId()) == null)
+        if(residentService.getByStudentId(resident.getStudentId()) == null)
             return new ResponseEntity<Long>(residentService.create(resident).getId(), HttpStatus.CREATED);
         else
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -34,7 +34,7 @@ public class ResidentController {
 
     @GetMapping(value="/{student_id}")
     public ResponseEntity<Resident> getResident(@PathVariable String student_id) {
-        Resident resident = residentService.findByStudentId(student_id);
+        Resident resident = residentService.getByStudentId(student_id);
         return resident != null
                 ? new ResponseEntity<>(resident, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -59,7 +59,7 @@ public class ResidentController {
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
 
         if(role == RoleType.COMMANDANT || authentication.getName().equals(resident.getStudentId())) {
-            Resident old_resident = residentService.findByStudentId(student_id);
+            Resident old_resident = residentService.getByStudentId(student_id);
 
             if(old_resident != null) {
 
@@ -78,7 +78,7 @@ public class ResidentController {
     @DeleteMapping("/{student_id}")
     @PreAuthorize("hasAnyAuthority('COMMANDANT')")
     public ResponseEntity<?> deleteResident(@PathVariable String student_id) {
-        Resident resident = residentService.findByStudentId(student_id);
+        Resident resident = residentService.getByStudentId(student_id);
 
         if (resident != null && residentService.delete(resident.getId()))
             return new ResponseEntity<>(HttpStatus.OK);

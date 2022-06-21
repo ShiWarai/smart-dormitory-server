@@ -5,10 +5,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mirea.smartdormitory.model.entities.Room;
-import ru.mirea.smartdormitory.model.repositories.IRoomRepository;
+import ru.mirea.smartdormitory.repositories.IRoomRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -20,14 +19,14 @@ public class RoomService extends AbstractService<Room, IRoomRepository> {
 
     @Override
     public Room update(Long number, Room entity) {
-        if(findById(number) != null)
+        if(getById(number) != null)
             return repository.save(entity);
         else
             return null;
     }
 
     @Override
-    public Room findById(Long number) {
+    public Room getById(Long number) {
         // id = number
         return repository.findByNumber(number);
     }

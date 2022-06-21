@@ -10,7 +10,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.mirea.smartdormitory.model.entities.Room;
-import ru.mirea.smartdormitory.model.repositories.IRoomRepository;
+import ru.mirea.smartdormitory.repositories.IRoomRepository;
 import ru.mirea.smartdormitory.model.types.RoomType;
 
 @ExtendWith(MockitoExtension.class)

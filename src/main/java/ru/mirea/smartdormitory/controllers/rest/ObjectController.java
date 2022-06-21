@@ -1,14 +1,24 @@
 package ru.mirea.smartdormitory.controllers.rest;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jackson.JsonObjectSerializer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ru.mirea.smartdormitory.model.entities.Object;
+import ru.mirea.smartdormitory.model.entities.Resident;
+import ru.mirea.smartdormitory.model.response_bodies.ObjectExtendedBody;
+import ru.mirea.smartdormitory.model.types.ObjectType;
+import ru.mirea.smartdormitory.model.types.RoleType;
 import ru.mirea.smartdormitory.services.*;
 
+import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
@@ -44,7 +54,7 @@ public class ObjectController {
 
     @GetMapping(value="/{id}")
     public ResponseEntity<Object> getObject(@PathVariable Long id) {
-        Object object = objectService.findById(id);
+        Object object = objectService.getById(id);
         return object != null
                 ? new ResponseEntity<>(object, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -58,9 +68,22 @@ public class ObjectController {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping(value="/by")
+    public ResponseEntity<List<Object>> getObjectsBy(@RequestParam(value = "room", required = false) Long roomNumber)
+    {
+        List<Object> objects = null;
+
+        if(roomNumber != null)
+            objects = objectService.getAllByRoomNumber(roomNumber);
+
+        return objects != null && !objects.isEmpty()
+                ? new ResponseEntity<>(objects, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @GetMapping(value="/status/{id}")
     public ResponseEntity<Long> getObjectStatus(@PathVariable Long id) {
-        Object object = objectService.findById(id);
+        Object object = objectService.getById(id);
         return object != null
                 ? new ResponseEntity<>(object.getStatusId(), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -69,9 +92,9 @@ public class ObjectController {
     @PutMapping(value="/status/{id}/{status_id}")
     @PreAuthorize("hasAnyAuthority('STUFF', 'GUARD', 'COMMANDANT')")
     public ResponseEntity<?> setObjectStatus(@PathVariable Long id, @PathVariable Long status_id) {
-        Object object = objectService.findById(id);
+        Object object = objectService.getById(id);
 
-        if(object != null && statusTypeService.findById(status_id) != null) {
+        if(object != null && statusTypeService.getById(status_id) != null) {
             object.setStatusId(status_id);
             objectService.update(id, object);
 
@@ -87,7 +110,7 @@ public class ObjectController {
 
     @GetMapping(value= "/active_reservations/{id}")
     public ResponseEntity<?> getActiveReservations(@PathVariable Long id) {
-        if(objectService.findById(id) == null)
+        if(objectService.getById(id) == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         List<Long> activeReservations = reservationService.getAllActiveIdByObject(id);
@@ -96,7 +119,7 @@ public class ObjectController {
 
     @GetMapping(value= "/reservations/{id}")
     public ResponseEntity<?> getReservations(@PathVariable Long id) {
-        if(objectService.findById(id) == null)
+        if(objectService.getById(id) == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         List<Long> reservations = reservationService.getAllIdByObject(id);
@@ -106,7 +129,7 @@ public class ObjectController {
     @DeleteMapping(value= "/reservations/{id}")
     @PreAuthorize("hasAuthority('STUFF')")
     public ResponseEntity<?> deleteReservations(@PathVariable Long id) {
-        if(objectService.findById(id) == null)
+        if(objectService.getById(id) == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         reservationService.deleteAllByObjectId(id);
@@ -116,7 +139,7 @@ public class ObjectController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('STUFF')")
     public ResponseEntity<Object> updateObject(@PathVariable Long id, @RequestBody Object object) {
-        Object old_object = objectService.findById(id);
+        Object old_object = objectService.getById(id);
         if(old_object != null) {
             object.setId(id);
             return new ResponseEntity<Object>(objectService.update(object.getId(), object), HttpStatus.OK);
@@ -128,7 +151,7 @@ public class ObjectController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('STUFF')")
     public ResponseEntity<?> deleteObject(@PathVariable Long id) {
-            if (objectService.findById(id) != null && objectService.delete(id))
+            if (objectService.getById(id) != null && objectService.delete(id))
                 return new ResponseEntity<>(HttpStatus.OK);
             else
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);

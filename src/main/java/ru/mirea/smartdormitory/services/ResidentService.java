@@ -9,7 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mirea.smartdormitory.model.entities.Resident;
-import ru.mirea.smartdormitory.model.repositories.IResidentRepository;
+import ru.mirea.smartdormitory.repositories.IResidentRepository;
 import ru.mirea.smartdormitory.model.types.RoleType;
 
 @Service
@@ -33,7 +33,7 @@ public class ResidentService extends AbstractService<Resident, IResidentReposito
 
     @Override
     public Resident update(Long id, Resident entity) {
-        if(findById(id) != null) {
+        if(getById(id) != null) {
             entity.setPinCode(bCryptPasswordEncoder.encode(entity.getPinCode()));
             residentRepository.updatePropertiesByStudentId(entity.getStudentId(),
                                                             entity.getSurname(),
@@ -43,17 +43,17 @@ public class ResidentService extends AbstractService<Resident, IResidentReposito
                                                             entity.getPinCode(),
                                                             entity.getRoomNumber(),
                                                             entity.getRole());
-            return findById(id);
+            return getById(id);
         }
         else
             return null;
     }
 
     public RoleType getRoleTypeByStudentId(String student_id) {
-        return RoleType.valueOf(findByStudentId(student_id).getRole());
+        return RoleType.valueOf(getByStudentId(student_id).getRole());
     }
 
-    public Resident findByStudentId(String username){
+    public Resident getByStudentId(String username){
         return residentRepository.findResidentByStudentId(username);
     }
 

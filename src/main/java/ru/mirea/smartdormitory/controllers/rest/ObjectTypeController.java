@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.mirea.smartdormitory.model.types.ObjectType;
-import ru.mirea.smartdormitory.model.types.ObjectType;
 import ru.mirea.smartdormitory.services.ObjectTypeService;
 
 import java.util.List;
@@ -31,7 +30,7 @@ public class ObjectTypeController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
     public ResponseEntity<ObjectType> updateObjectType(@PathVariable Long id, @RequestBody ObjectType objectType) {
-        if(objectTypeService.findById(id) != null) {
+        if(objectTypeService.getById(id) != null) {
             objectType.setId(id);
             return new ResponseEntity<>(objectTypeService.update(objectType.getId(), objectType), HttpStatus.OK);
         }
@@ -41,7 +40,7 @@ public class ObjectTypeController {
 
     @GetMapping(value="/schedule/{id}")
     public ResponseEntity<?> getSchedule(@PathVariable Long id) {
-        ObjectType objectType = objectTypeService.findById(id);
+        ObjectType objectType = objectTypeService.getById(id);
         return objectType != null
                 ? new ResponseEntity<>(objectType.getSchedule(), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -50,7 +49,7 @@ public class ObjectTypeController {
     @PutMapping(value="/schedule/{id}")
     @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
     public ResponseEntity<?> setSchedule(@PathVariable Long id, @RequestBody String cron_schedule) {
-        ObjectType objectType = objectTypeService.findById(id);
+        ObjectType objectType = objectTypeService.getById(id);
 
         if(objectType != null)
         {
@@ -66,7 +65,7 @@ public class ObjectTypeController {
     @GetMapping(value="/{id}")
     @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
     public ResponseEntity<?> getObjectType(@PathVariable Long id) {
-        ObjectType objectType = objectTypeService.findById(id);
+        ObjectType objectType = objectTypeService.getById(id);
         return objectType != null
                 ? new ResponseEntity<>(objectType, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -84,7 +83,7 @@ public class ObjectTypeController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('COMMANDANT', 'STUFF')")
     public ResponseEntity<?> deleteObjectType(@PathVariable Long id) {
-        if (objectTypeService.findById(id) != null && objectTypeService.delete(id))
+        if (objectTypeService.getById(id) != null && objectTypeService.delete(id))
             return new ResponseEntity<>(HttpStatus.OK);
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

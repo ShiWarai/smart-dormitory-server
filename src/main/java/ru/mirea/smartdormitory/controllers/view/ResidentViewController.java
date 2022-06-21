@@ -68,7 +68,7 @@ public class ResidentViewController {
     public String viewResident(@PathVariable String student_id, Authentication authentication, Model model) {
         RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
 
-        Resident resident = residentService.findByStudentId(student_id);
+        Resident resident = residentService.getByStudentId(student_id);
 
         int accessLevel = 0;
         if(authentication.getName().equals(student_id))
@@ -92,7 +92,7 @@ public class ResidentViewController {
 
         if(role == RoleType.COMMANDANT || authentication.getName().equals(student_id))
         {
-            Resident old_resident = residentService.findByStudentId(resident.getStudentId());
+            Resident old_resident = residentService.getByStudentId(resident.getStudentId());
 
             if(old_resident != null) {
                 if (role != RoleType.COMMANDANT)
@@ -100,7 +100,7 @@ public class ResidentViewController {
                 if (resident.getPinCode().isBlank())
                     resident.setPinCode(old_resident.getPinCode());
 
-                residentService.update(residentService.findByStudentId(student_id).getId(), resident);
+                residentService.update(residentService.getByStudentId(student_id).getId(), resident);
 
                 if(resident.getStudentId().equals(authentication.getName()))
                     return "redirect:/residents/me";
@@ -117,7 +117,7 @@ public class ResidentViewController {
     @GetMapping("/delete/{student_id}")
     @PreAuthorize("hasAnyAuthority('COMMANDANT')")
     public String deleteResident(@PathVariable String student_id) {
-        Resident resident = residentService.findByStudentId(student_id);
+        Resident resident = residentService.getByStudentId(student_id);
 
         if (resident != null && residentService.delete(resident.getId()))
             return "redirect:/residents/list";

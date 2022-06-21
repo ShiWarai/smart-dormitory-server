@@ -1,16 +1,12 @@
 package ru.mirea.smartdormitory.services;
 
-import org.quartz.CronExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mirea.smartdormitory.model.entities.Reservation;
-import ru.mirea.smartdormitory.model.repositories.IReservationRepository;
+import ru.mirea.smartdormitory.repositories.IReservationRepository;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -24,18 +20,24 @@ public class ReservationService extends AbstractService<Reservation, IReservatio
 
     @Override
     public Reservation update(Long id, Reservation entity) {
-        findById(id);
+        getById(id);
         entity.setId(id);
         return create(entity);
     }
 
-    public List<Reservation> findAllByResidentId(Long id){
+    public List<Reservation> getAllByResidentId(Long id)
+    {
         return repository.findAllByResidentId(id);
     }
 
-    public List<Reservation> findByObjectId(Long objectId)
+    public List<Reservation> getByObjectId(Long objectId)
     {
         return repository.findAllByObjectId(objectId);
+    }
+
+    public List<Reservation> getAllByObjectIdAndResidentId(Long object_id, Long resident_id)
+    {
+        return repository.findAllByObjectIdAndResidentId(object_id, resident_id);
     }
 
     public void deleteAllByObjectId(Long objectId) {
@@ -45,7 +47,20 @@ public class ReservationService extends AbstractService<Reservation, IReservatio
     public List<Long> getAllActiveIdByObject(Long objectId) {
         List<Long> currentReservationIds = new ArrayList<Long>();
 
-        List<Reservation> activeReservations = this.findByObjectId(objectId);
+        List<Reservation> activeReservations = this.getByObjectId(objectId);
+
+        for (Reservation reservation : activeReservations) {
+            if(reservation.isActive())
+                currentReservationIds.add(reservation.getId());
+        }
+
+        return currentReservationIds;
+    }
+
+    public List<Long> getAllActiveIdByObjectAndResidentId(Long object_id, Long resident_id) {
+        List<Long> currentReservationIds = new ArrayList<Long>();
+
+        List<Reservation> activeReservations = this.getAllByObjectIdAndResidentId(object_id, resident_id);
 
         for (Reservation reservation : activeReservations) {
             if(reservation.isActive())
@@ -58,7 +73,7 @@ public class ReservationService extends AbstractService<Reservation, IReservatio
     public List<Long> getAllIdByObject(Long objectId) {
         List<Long> currentReservationIds = new ArrayList<Long>();
 
-        List<Reservation> reservations = this.findByObjectId(objectId);
+        List<Reservation> reservations = this.getByObjectId(objectId);
 
         for (Reservation reservation : reservations) {
             currentReservationIds.add(reservation.getId());

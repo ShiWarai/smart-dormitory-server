@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.mirea.smartdormitory.model.types.ObjectType;
-import ru.mirea.smartdormitory.model.types.StatusType;
 
 import javax.persistence.*;
 
@@ -41,4 +40,11 @@ public class Object {
 
     @Column(name = "room_number", nullable = false)
     private Long roomNumber;
+
+    public boolean isAvailable(){
+        if(statusId == 100L)
+            return true;
+        else
+            return false;
+    }
 }

@@ -8,7 +8,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.mirea.smartdormitory.model.repositories.IStatusTypeRepository;
+import ru.mirea.smartdormitory.repositories.IStatusTypeRepository;
 import ru.mirea.smartdormitory.model.types.StatusType;
 
 @ExtendWith(MockitoExtension.class)
