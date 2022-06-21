@@ -1,14 +1,24 @@
 package ru.mirea.smartdormitory.controllers.rest;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jackson.JsonObjectSerializer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ru.mirea.smartdormitory.model.entities.Object;
+import ru.mirea.smartdormitory.model.entities.Resident;
+import ru.mirea.smartdormitory.model.response_bodies.ObjectExtendedBody;
+import ru.mirea.smartdormitory.model.types.ObjectType;
+import ru.mirea.smartdormitory.model.types.RoleType;
 import ru.mirea.smartdormitory.services.*;
 
+import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
@@ -59,9 +69,10 @@ public class ObjectController {
     }
 
     @GetMapping(value="/by")
-    public ResponseEntity<List<Object>> getObjectsBy(@RequestParam(value = "room", required = false) Long roomNumber) {
-
+    public ResponseEntity<List<Object>> getObjectsBy(@RequestParam(value = "room", required = false) Long roomNumber)
+    {
         List<Object> objects = null;
+
         if(roomNumber != null)
             objects = objectService.getAllByRoomNumber(roomNumber);
 

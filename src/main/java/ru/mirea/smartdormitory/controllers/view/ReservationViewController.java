@@ -63,7 +63,7 @@ public class ReservationViewController {
         reservation.setStartReservation(time);
         reservation.setEndReservation(time);
 
-        model.addAttribute("objects", objectService.getAll());
+        model.addAttribute("objects", objectService.getAllCanBeReserved(reservationService));
         model.addAttribute("role", role.name());
         model.addAttribute("reservation", reservation);
         return "create_reservation";

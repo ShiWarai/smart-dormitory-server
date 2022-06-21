@@ -57,6 +57,19 @@ public class ReservationService extends AbstractService<Reservation, IReservatio
         return currentReservationIds;
     }
 
+    public List<Long> getAllActiveIdByObjectAndResidentId(Long object_id, Long resident_id) {
+        List<Long> currentReservationIds = new ArrayList<Long>();
+
+        List<Reservation> activeReservations = this.getAllByObjectIdAndResidentId(object_id, resident_id);
+
+        for (Reservation reservation : activeReservations) {
+            if(reservation.isActive())
+                currentReservationIds.add(reservation.getId());
+        }
+
+        return currentReservationIds;
+    }
+
     public List<Long> getAllIdByObject(Long objectId) {
         List<Long> currentReservationIds = new ArrayList<Long>();
 

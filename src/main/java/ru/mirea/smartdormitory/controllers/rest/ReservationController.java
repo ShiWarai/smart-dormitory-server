@@ -37,17 +37,12 @@ public class ReservationController {
     @PostMapping(value = "/", consumes = {"application/json"})
     public ResponseEntity<?> createReservation(Authentication authentication, @RequestBody ReservationBody reservation) {
         Timestamp time = new Timestamp(System.currentTimeMillis());
-        RoleType role = residentService.getRoleTypeByStudentId(authentication.getName());
         Object object = objectService.getById(reservation.getObjectId());
-        ObjectType objectType = object.getType();
 
-        if(objectType.getReservationLimit() != null) {
-            // Считаем кол-во
-            int count = reservationService.getAllIdByObject(object.getId()).size();
-            if((count + 1) > object.getType().getReservationLimit())
-                return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
-        }
+        if(objectService.canBeReserved(object, reservationService))
+            return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
 
+        // There is better to use adapter
         Reservation reservation_entity = new Reservation();
 
         reservation_entity.setObjectId(reservation.getObjectId());
