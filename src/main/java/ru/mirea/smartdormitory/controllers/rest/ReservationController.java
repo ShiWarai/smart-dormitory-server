@@ -39,7 +39,7 @@ public class ReservationController {
         Timestamp time = new Timestamp(System.currentTimeMillis());
         Object object = objectService.getById(reservation.getObjectId());
 
-        if(objectService.canBeReserved(object, reservationService))
+        if(!objectService.canBeReserved(object, reservationService))
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
 
         // There is better to use adapter

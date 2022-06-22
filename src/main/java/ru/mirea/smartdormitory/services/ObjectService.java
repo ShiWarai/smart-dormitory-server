@@ -51,28 +51,36 @@ public class ObjectService extends AbstractService<Object, IObjectRepository> {
     public boolean canBeReserved(Object object, ReservationService reservationService)
     {
         ObjectType objectType = object.getType();
+        System.out.println("\nObject: " + object.getId().toString());
 
-        if(!object.isAvailable())
+        if(!object.isAvailable()) {
+            System.out.println("Object unavailable!");
             return false;
+        }
 
         if(objectType.getReservationLimit() != null) {
             int count = reservationService.getAllIdByObject(object.getId()).size(); // Calculating is need
-            if((count + 1) > object.getType().getReservationLimit())
+            if((count + 1) > object.getType().getReservationLimit()) {
+                System.out.println("Limit reached!");
                 return false;
+            }
         }
 
         String cronStr = object.getType().getSchedule();
         if(!(cronStr == null || cronStr.isBlank())) {
             try {
                 CronExpression expression = new CronExpression(cronStr);
-                if (!expression.isSatisfiedBy(new Date()))
+                if (!expression.isSatisfiedBy(new Date())) {
+                    System.out.println("Not in schedule!");
                     return false;
+                }
             } catch (ParseException exp) {
                 System.out.printf("WRONG CRON: %s\n", cronStr);
                 return false;
             }
         }
 
+        System.out.println("All right!");
         return true;
     }
 }
